@@ -18,8 +18,6 @@
 #    Noon on Gregorian 1900-03-01 (day 61 in the 1900-based system) is JDN 2415080.0
 #    Noon on Gregorian 1904-01-02 (day  1 in the 1904-based system) is JDN 2416482.0
 
-from timemachine import int_floor_div as ifd
-
 _JDN_delta = (2415080 - 61, 2416482 - 1)
 assert _JDN_delta[1] - _JDN_delta[0] == 1462
 
@@ -82,15 +80,15 @@ def xldate_as_tuple(xldate, datemode):
         raise XLDateAmbiguous(xldate)
 
     jdn = xldays + _JDN_delta[datemode]
-    yreg = (ifd(ifd(jdn * 4 + 274277, 146097) * 3, 4) + jdn + 1363) * 4 + 3
-    mp = ifd(yreg % 1461, 4) * 535 + 333
-    d = ifd(mp % 16384, 535) + 1
+    yreg = ((((jdn * 4 + 274277) // 146097) * 3 // 4) + jdn + 1363) * 4 + 3
+    mp = ((yreg % 1461) // 4) * 535 + 333
+    d = ((mp % 16384) // 535) + 1
     # mp /= 16384
     mp >>= 14
     if mp >= 10:
-        return (ifd(yreg, 1461) - 4715, mp - 9, d, hour, minute, second)
+        return ((yreg // 1461) - 4715, mp - 9, d, hour, minute, second)
     else:
-        return (ifd(yreg, 1461) - 4716, mp + 3, d, hour, minute, second)
+        return ((yreg // 1461) - 4716, mp + 3, d, hour, minute, second)
 
 # === conversions from date/time to xl numbers
 
@@ -113,7 +111,9 @@ _days_in_month = (None, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31)
 # @throws XLDateBadTuple (year, month, day) is too early/late or has invalid component(s)
 # @throws XLDateError Covers the specific errors
 
-def xldate_from_date_tuple((year, month, day), datemode):
+def xldate_from_date_tuple(date_tuple, datemode):
+    """Create an excel date from a tuple of (year, month, day)"""
+    year, month, day = date_tuple
 
     if datemode not in (0, 1):
         raise XLDateBadDatemode(datemode)
@@ -136,8 +136,8 @@ def xldate_from_date_tuple((year, month, day), datemode):
         Mp = M + 9
     else:
         Mp = M - 3
-    jdn = ifd(1461 * Yp, 4) + ifd(979 * Mp + 16, 32) + \
-        day - 1364 - ifd(ifd(Yp + 184, 100) * 3, 4)
+    jdn = (1461 * Yp // 4) + ((979 * Mp + 16) // 32) + \
+        day - 1364 - (((Yp + 184) // 100) * 3 // 4)
     xldays = jdn - _JDN_delta[datemode]
     if xldays <= 0:
         raise XLDateBadTuple("Invalid (year, month, day): %r" % ((year, month, day),))
@@ -152,7 +152,9 @@ def xldate_from_date_tuple((year, month, day), datemode):
 # @param second 0 <= second < 60
 # @throws XLDateBadTuple Out-of-range hour, minute, or second
 
-def xldate_from_time_tuple((hour, minute, second)):
+def xldate_from_time_tuple(time_tuple):
+    """Create an excel date from a tuple of (hour, minute, second)"""
+    hour, minute, second = time_tuple
     if 0 <= hour < 24 and 0 <= minute < 60 and 0 <= second < 60:
         return ((second / 60.0 + minute) / 60.0 + hour) / 24.0
     raise XLDateBadTuple("Invalid (hour, minute, second): %r" % ((hour, minute, second),))

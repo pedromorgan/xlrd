@@ -68,19 +68,23 @@ _WINDOW2_options = (
 ##
 # <p>Contains the data for one worksheet.</p>
 #
-# <p>In the cell access functions, "rowx" is a row index, counting from zero, and "colx" is a
-# column index, counting from zero.
-# Negative values for row/column indexes and slice positions are supported in the expected fashion.</p>
-#
-# <p>For information about cell types and cell values, refer to the documentation of the {@link #Cell} class.</p>
-#
-# <p>WARNING: You don't call this class yourself. You access Sheet objects via the Book object that
-# was returned when you called xlrd.open_workbook("myfile.xls").</p>
+
 
 
 class Sheet(BaseObject):
-    ##
-    # Name of sheet.
+    """Contains the data for one worksheet.
+    
+    * In the cell access functions, "rowx" is a row index, counting from zero, and 
+      "colx" is a column index, counting from zero.
+    * Negative values for row/column indexes and slice positions are supported in the expected fashion.
+    * For information about cell types and cell values, refer to the documentation of the {@link #Cell} class.
+    
+    
+    .. warning:: 
+        You don't call this class yourself. You access Sheet objects via the 
+        :py:class:`~xlrl.bool.Book` object that
+        was returned when you called :py:func:`xlrd.open_workbook`("myfile.xls")
+    """
     name = ''
 
     ##
@@ -388,9 +392,15 @@ class Sheet(BaseObject):
         # self._put_cell_cells_appended = 0
 
 
-    ##
-    # {@link #Cell} object in the given row and column.
     def cell(self, rowx, colx):
+        """:py:class:`~xlrd.sheet.Cell` object in the given row and column.
+        
+        :param rowx: The row index 
+        :type rowx: int
+        :param colx: The column index
+        :type colx: int
+        :rtype: A :py:class:`~xlrd.sheet.Cell` object
+        """
         if self.formatting_info:
             xfx = self.cell_xf_index(rowx, colx)
         else:
@@ -401,22 +411,34 @@ class Sheet(BaseObject):
             xfx,
             )
 
-    ##
-    # Value of the cell in the given row and column.
+    
     def cell_value(self, rowx, colx):
+        """Value of the cell in the given row and column.
+        
+        :param rowx: The row index 
+        :type rowx: int
+        :param colx: The column index
+        :type colx: int
+        :rtype: TODO
+        """
         return self._cell_values[rowx][colx]
 
-    ##
-    # Type of the cell in the given row and column.
-    # Refer to the documentation of the {@link #Cell} class.
+
     def cell_type(self, rowx, colx):
+        """Type of the cell in the given row and column.
+        
+        Refer to the documentation of the {@link #Cell} class.
+        """
         return self._cell_types[rowx][colx]
 
-    ##
-    # XF index of the cell in the given row and column.
-    # This is an index into Book.{@link #Book.xf_list}.
-    # <br /> -- New in version 0.6.1
+
     def cell_xf_index(self, rowx, colx):
+        """XF index of the cell in the given row and column.
+        
+        # This is an index into Book.@link #:py:ref:`xlrd.bookBook.xf_list`.
+        
+        .. versionchanged:: 0.6.1
+        """
         self.req_fmt_info()
         xfx = self._cell_xf_indexes[rowx][colx]
         if xfx > -1:
@@ -1499,7 +1521,8 @@ class Sheet(BaseObject):
             offset = 0
 
     def update_cooked_mag_factors(self):
-        # Cached values are used ONLY for the non-active view mode.
+        """
+        Cached values are used ONLY for the non-active view mode.
         # When the user switches to the non-active view mode,
         # if the cached value for that mode is not valid,
         # Excel pops up a window which says:
@@ -1507,6 +1530,7 @@ class Sheet(BaseObject):
         # When the user hits OK, it drops into the non-active view mode
         # but uses the magn from the active mode.
         # NOTE: definition of "valid" depends on mode ... see below
+        """
         blah = DEBUG or self.verbosity > 0
         if self.show_in_page_break_preview:
             if self.scl_mag_factor is None: # no SCL record

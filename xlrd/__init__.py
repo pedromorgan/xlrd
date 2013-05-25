@@ -334,43 +334,17 @@ except ImportError:
 USE_MMAP = MMAP_AVAILABLE
 
 
-MY_EOF = 0xF00BAAA # not a 16-bit number
-
-SUPBOOK_UNK, SUPBOOK_INTERNAL, SUPBOOK_EXTERNAL, SUPBOOK_ADDIN, SUPBOOK_DDEOLE = range(5)
-
-SUPPORTED_VERSIONS = (80, 70, 50, 45, 40, 30, 21, 20)
-
-code_from_builtin_name = {
-    u"Consolidate_Area": u"\x00",
-    u"Auto_Open":        u"\x01",
-    u"Auto_Close":       u"\x02",
-    u"Extract":          u"\x03",
-    u"Database":         u"\x04",
-    u"Criteria":         u"\x05",
-    u"Print_Area":       u"\x06",
-    u"Print_Titles":     u"\x07",
-    u"Recorder":         u"\x08",
-    u"Data_Form":        u"\x09",
-    u"Auto_Activate":    u"\x0A",
-    u"Auto_Deactivate":  u"\x0B",
-    u"Sheet_Title":      u"\x0C",
-    u"_FilterDatabase":  u"\x0D",
-    }
-builtin_name_from_code = {}
-for _bin, _bic in code_from_builtin_name.items():
-    builtin_name_from_code[_bic] = _bin
-del _bin, _bic
-
 
 def open_workbook(filename=None,
-                  logfile=sys.stdout,
-                  verbosity=0,
-                  pickleable=True,
-                  use_mmap=USE_MMAP,
-                  file_contents=None,
-                  encoding_override=None,
-                  formatting_info=False,
-                  on_demand=False):
+    logfile=sys.stdout,
+    verbosity=0,
+    use_mmap=USE_MMAP,
+    file_contents=None,
+    encoding_override=None,
+    formatting_info=False,
+    on_demand=False,
+    ragged_rows=False,
+    ):
     """Open a spreadsheet file for data extraction.
 
     :param filename: The path to the spreadsheet file to be opened.
@@ -425,102 +399,6 @@ def open_workbook(filename=None,
 
     :return: An instance of the :class:`Book` class.
     """
-    t0 = time.clock()
-    if TOGGLE_GC:
-        orig_gc_enabled = gc.isenabled()
-        if orig_gc_enabled:
-            gc.disable()
-    bk = Book()
-    try:
-        bk.biff2_8_load(
-            filename=filename, file_contents=file_contents,
-            logfile=logfile, verbosity=verbosity, pickleable=pickleable, use_mmap=use_mmap,
-            encoding_override=encoding_override,
-            formatting_info=formatting_info,
-            on_demand=on_demand,
-            ragged_rows=ragged_rows,
-            )
-        t1 = time.clock()
-        bk.load_time_stage_1 = t1 - t0
-        biff_version = bk.getbof(XL_WORKBOOK_GLOBALS)
-        if not biff_version:
-            raise XLRDError("Can't determine file's BIFF version")
-        if biff_version not in SUPPORTED_VERSIONS:
-            raise XLRDError(
-                "BIFF version %s is not supported"
-                % biff_text_from_num[biff_version]
-                )
-        bk.biff_version = biff_version
-        if biff_version <= 40:
-            # no workbook globals, only 1 worksheet
-            if on_demand:
-                fprintf(bk.logfile,
-                    "*** WARNING: on_demand is not supported for this Excel version.\n"
-                    "*** Setting on_demand to False.\n")
-                bk.on_demand = on_demand = False
-            bk.fake_globals_get_sheet()
-        elif biff_version == 45:
-            # worksheet(s) embedded in global stream
-            bk.parse_globals()
-            if on_demand:
-                fprintf(bk.logfile, "*** WARNING: on_demand is not supported for this Excel version.\n"
-                                    "*** Setting on_demand to False.\n")
-                bk.on_demand = on_demand = False
-=======
-##
-#
-# Open a spreadsheet file for data extraction.
-#
-# @param filename The path to the spreadsheet file to be opened.
-#
-# @param logfile An open file to which messages and diagnostics are written.
-#
-# @param verbosity Increases the volume of trace material written to the logfile.
-#
-# @param use_mmap Whether to use the mmap module is determined heuristically.
-# Use this arg to override the result. Current heuristic: mmap is used if it exists.
-#
-# @param file_contents ... as a string or an mmap.mmap object or some other behave-alike object.
-# If file_contents is supplied, filename will not be used, except (possibly) in messages.
-#
-# @param encoding_override Used to overcome missing or bad codepage information
-# in older-version files. Refer to discussion in the <b>Unicode</b> section above.
-# <br /> -- New in version 0.6.0
-#
-# @param formatting_info Governs provision of a reference to an XF (eXtended Format) object
-# for each cell in the worksheet.
-# <br /> Default is <i>False</i>. This is backwards compatible and saves memory.
-# "Blank" cells (those with their own formatting information but no data) are treated as empty
-# (by ignoring the file's BLANK and MULBLANK records).
-# It cuts off any bottom "margin" of rows of empty (and blank) cells and
-# any right "margin" of columns of empty (and blank) cells.
-# Only cell_value and cell_type are available.
-# <br /> <i>True</i> provides all cells, including empty and blank cells.
-# XF information is available for each cell.
-# <br /> -- New in version 0.6.1
-#
-# @param on_demand Governs whether sheets are all loaded initially or when demanded
-# by the caller. Please refer back to the section "Loading worksheets on demand" for details.
-# <br /> -- New in version 0.7.1
-#
-# @param ragged_rows False (the default) means all rows are padded out with empty cells so that all
-# rows have the same size (Sheet.ncols). True means that there are no empty cells at the ends of rows.
-# This can result in substantial memory savings if rows are of widely varying sizes. See also the
-# Sheet.row_len() method.
-# <br /> -- New in version 0.7.2
-#
-# @return An instance of the Book class.
-
-def open_workbook(filename=None,
-    logfile=sys.stdout,
-    verbosity=0,
-    use_mmap=USE_MMAP,
-    file_contents=None,
-    encoding_override=None,
-    formatting_info=False,
-    on_demand=False,
-    ragged_rows=False,
-    ):
     peeksz = 4
     if file_contents:
         peek = file_contents[:peeksz]
@@ -571,6 +449,7 @@ def open_workbook(filename=None,
     return bk
 
 
+
 def dump(filename, outfile=sys.stdout, unnumbered=False):
     """For debugging: dump the file's BIFF records in char & hex.
 
@@ -586,6 +465,7 @@ def dump(filename, outfile=sys.stdout, unnumbered=False):
     bk = Book()
     bk.biff2_8_load(filename=filename, logfile=outfile, )
     biff_dump(bk.mem, bk.base, bk.stream_len, 0, outfile, unnumbered)
+
 
 
 def count_records(filename, outfile=sys.stdout):

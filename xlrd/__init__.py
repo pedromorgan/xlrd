@@ -356,14 +356,19 @@ def open_workbook(filename=None,
     :param verbosity: Increases the volume of trace material written to the logfile.
     :type verbosity: int
 
-    :param pickleable: Default is `True`. In Python 2.4 or earlier, setting to false will cause
-       use of array.array objects which save some memory but can't be pickled.  In Python 2.5,
-       array.arrays are used unconditionally. Note: if you have large files that you need to
-       read multiple times, it can be much faster to :meth:`cPickle.dump()` the
-       :class:`xlrd.Book` object once, and use :meth:`cPickle.load()` multiple times.
+    :param pickleable: Default is True. 
+        *   In Python 2.4 or earlier, setting to false will cause
+            use of array.array objects which save some memory but can't be pickled.  
+        *    In Python 2.5,array.arrays are used unconditionally. 
+        
+        .. note::
+        
+            If you have large files that you need to
+            read multiple times, it can be much faster to :meth:`cPickle.dump()` the
+            :py:class:`xlrd.book.Book` object once, and use :meth:`cPickle.load()` multiple times.
 
     :param use_mmap: Map the spreadsheet's contents into memory, if `file_contents` is
-       `None`. Memory mapped files are used if the :mod:`mmap` module exists.
+       `None`. Memory mapped files are used if the :py::mod:`mmap` module exists.
     :type use_mmap: Boolean
 
     :param file_contents: The spreadsheet's contents, overriding filename. filename is still useful for error messagse.

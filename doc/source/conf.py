@@ -26,6 +26,11 @@ sys.path = [ os.path.realpath("../..") ] + sys.path
 from xlrd.info import __VERSION__
 from xlrd.info import __PYXL_MOD__
 
+intersphinx_mapping = {
+    'xlutils': ('http://pythonhosted.org/xlutils/', None),
+    'xlwt': ('http://pythonhosted.org/xlwt/', None),
+    'python': ('http://docs.python.org/3.2', None),
+}
 
 # -- General configuration -----------------------------------------------------
 

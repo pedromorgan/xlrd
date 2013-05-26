@@ -170,17 +170,22 @@ We've already seen how to iterate over the contents of a worksheet and retrieve 
 
 There are a symmetrical set of methods that retrieve groups of cell information either by row or by column.
 
-*   The :py:meth:`xlrd.sheet.Sheet.row` 
-    and ``col`` methods return all 
-    the ``Cell`` objects for a whole row or column, respectively.
+*   The :py:meth:`~xlrd.sheet.Sheet.row` 
+    and :py:meth:`~xlrd.sheet.Sheet.col` methods return all 
+    the :py:class:`~xlrd.sheet.Sheet.Cell` objects for a whole row or column, respectively.
 
-*   The ``row_slice`` and ``col_slice`` methods return a list of ``Cell`` objects in a row or column, respectively,     bounded by and start index and an optional end index.
+*   The :py:meth:`~xlrd.sheet.Sheet.row_slice` and :py:meth:`~xlrd.sheet.Sheet.col_slice` methods 
+    return a list of :py:class:`~xlrd.sheet.Sheet.Cell` objects in a row 
+    or column, respectively, bounded by and start index and an optional end index.
+*   The :py:meth:`~xlrd.sheet.Sheet.row_types` 
+    and :py:meth:`~xlrd.sheet.Sheet.col_types` methods 
+    return a list of integers representing the cell types in a row 
+    or column, respectively, bounded by and start index and an optional end index.
+*   The :py:meth:`~xlrd.sheet.Sheet.row_values` and :py:meth:`~xlrd.sheet.Sheet.col_values` methods 
+    return a list of objects representing the cell values in a the row or 
+    column, bounded by a start index and an optional end index.
 
-The ``row_types`` and ``col_types`` methods return a list of integers representing the cell types in a row or column, respectively, bounded by and start index and an optional end index.
-
-The ``row_values`` and ``col_values`` methods return a list of objects representing the cell values in a row or column, respectively, bounded by a start index and an optional end index.
-
-The following examples demonstrates all of the sheet iteration methods:
+The following examples from sheet_iteration.py demonstrates all of the sheet iteration methods:
 
 ::
 
@@ -207,19 +212,22 @@ The following examples demonstrates all of the sheet iteration methods:
   print sheet1.col_types(0,1)
   print sheet0.col_types(0,1,2)
   
-  sheet_iteration.py
+  
 
 Utility Functions
 ~~~~~~~~~~~~~~~~~
 
-When navigating around a workbook, it's often useful to be able to convert between row and column indexes and the Excel cell references that users may be used to seeing. The following functions are provided to help with this:
+When navigating around a :py:meth:`~xlrd.book.Book`, it's often useful 
+to be able to convert between row and column indexes and 
+the Excel cell references that users may be used to seeing. 
 
-The ``cellname`` function turns a row and column index into a relative Excel cell reference.
+The following functions are provided to help with this:
 
-The ``cellnameabs`` function turns a row and column index into
-an absolute Excel cell reference.
-
-The ``colname`` function turns a column index into an Excel column name.
+*   The :py:meth:`~xlrd.sheet.Sheet.cellname` function turns a row and column index into 
+    a relative Excel cell reference.
+*   The :py:meth:`~xlrd.cellnameabs` function turns a row and column 
+    index into an absolute Excel cell reference.
+*   The :py:meth:`~xlrd.colname` function turns a column index into an Excel column name.
 
 These three functions are demonstrated in the following example:
 
@@ -235,17 +243,19 @@ These three functions are demonstrated in the following example:
 Unicode
 -------
 
-All text attributes and values produced by ``xlrd`` will be either unicode objects or, in rare cases, ascii strings.
+All text attributes and values used by :py:mod:`xlrd` will be either 
+unicode objects or, in rare cases, ascii strings.
 
 Each piece of text in an Excel file written by Microsoft Excel is encoded into one of the following:
 
-* Latin1, if it fits
+*   Latin1, if it fits
+*   UTF_16_LE, if it doesn't fit into Latin1
+*   In older files, by an encoding specified by an MS codepage. These are mapped 
+    to Python encodings by ``xlrd`` and still result in unicode objects.
 
-* UTF_16_LE, if it doesn't fit into Latin1
-
-* In older files, by an encoding specified by an MS codepage. These are mapped to Python encodings by ``xlrd`` and still result in unicode objects.
-
-In rare cases, other software has been known to write no codepage or the wrong codepage into Excel files. In this case, the correct encoding may need to be specified to ``open_workbook``:
+In rare cases, other software has been known to write no codepage or the wrong codepage 
+into Excel files. In this case, the correct encoding may need to 
+be specified to :py:func:`xlrd.open_workbook`.
 
 ::
 
@@ -255,7 +265,9 @@ In rare cases, other software has been known to write no codepage or the wrong c
 Types of Cell
 -------------
 
-We have already seen the cell type expressed as an integer. This integer corresponds to a set of constants in xlrd that identify the type of the cell. The full set of possible cell types is listed in the following sections.
+We have already seen the cell type expressed as an integer. This integer corresponds to 
+a set of constants in xlrd that identify the type of the cell. The full set of possible 
+cell types is listed in the following sections.
 
 Text
 ~~~~

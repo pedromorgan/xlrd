@@ -1,44 +1,43 @@
-===========================
-About 
-===========================
+.. _Journyx: http://journyx.com/
+.. _Simplistix: http://www.simplistix.co.uk/
 
 
-================
+#############################
+About xlrd
+#############################
+
+===================
 Acknowledgements
-================
+===================
 
-Development of this module would not have been possible without the
-document "OpenOffice.org's Documentation of the Microsoft Excel File
-Format" ("|OOodocs|" for short).  The latest version is available from
-OpenOffice.org in `PDF format`_ and `ODT format`_.  Small portions of
-the |OOodocs| are reproduced in this document. A study of these
+Development of this module would not have been possible without the document "*OpenOffice.org Documentation of the Microsoft Excel File Format*" (The *OOodocs* for short).  
+
+The latest version is available from `OpenOffice.org <http://OpenOffice.org>`_ in 
+both pdf and odt.
+    * `openoffice.org/ExcelFileFormat.pdf <http://sc.openoffice.org/excelfileformat.pdf>`_ 
+    * `openoffice.org/ExcelFileFormat.odt <http://sc.openoffice.org/excelfileformat.odt>`_
+  
+Small portions are reproduced in this documentation. A study of these
 documents is recommended for those who wish a deeper understanding of
 the Excel\ |trade| file layout than the :mod:`xlrd` docs can provide.
 
-.. _PDF format: http://sc.openoffice.org/excelfileformat.pdf
-.. _ODT format: http://sc.openoffice.org/excelfileformat.odt
 
-Backporting to Python 2.1 was partially funded by `Journyx`_ -
-provider of timesheet and project accounting solutions.
+*   Backporting to Python 2.1 was partially funded by `Journyx`_ -
+    provider of timesheet and project accounting solutions.
+*   Provision of formatting information in version 0.6.1 was funded by `Simplistix`_
 
-.. _Journyx: http://journyx.com/
 
-Provision of formatting information in version 0.6.1 was funded by
-`Simplistix Ltd`_.
-
-.. _Simplistix Ltd: http://www.simplistix.co.uk
-
-========
+===================
 Overview
-========
+===================
 
 :mod:`xlrd` is a Python module for **reading** Microsoft\ |trade|
 Excel\ |trade| spreadsheet data. This module is not useful for
 *writing* Excel\ |trade| spreadsheets.
 
-====================
+======================
 Implementation Notes
-====================
+======================
 
 .. _palette_and_colours:
 

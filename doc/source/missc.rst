@@ -5,16 +5,18 @@ The :mod:`xlrd` Module
 .. automodule:: xlrd
    :members:
 
-===========================================================
-:mod:`biffh`: Binary Interchange File Format (BIFF) Handler
-===========================================================
+.. automodule:: xlrd.xlsx
+    :members:
+    :undoc-members:
+    :show-inheritance:
+    :private-members:
+    :special-members:
 
-.. automodule:: xlrd.biffh
-   :members:
-
-====================================================
-:mod:`formatting`: Extended Formatting (XF) handling
-====================================================
-
-.. automodule:: xlrd.formatting
-   :members:
+.. automodule:: xlrd.xldate
+    :members:
+    :undoc-members:
+    :show-inheritance:
+    :private-members:
+    :special-members:        
+       
+       

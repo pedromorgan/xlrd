@@ -1,9 +1,9 @@
-Reading Excel Files
-===================
+Quick Start - Reading Excel Files
+====================================
 
 All the examples shown below can be found in the ``xlrd`` directory of the course material.
 
-Opening Excel Files ie Workbooks
+Opening Excel Files 
 -------------------------------------
 
 Workbooks can be loaded either from a :py:func:`file`, an `mmap.mmap` object or from a string:
@@ -272,24 +272,26 @@ cell types is listed in the following sections.
 Text
 ~~~~
 
-*   These are represented by the :py:class:`xlrd.XL_CELL_TEXT` constant.
-*   Cells of this type will have values that are `unicode` objects.
+*   These are represented by the :py:const:`xlrd.XL_CELL_TEXT` constant.
+*   Cells of this type will have values that are :py:func:`unicode` objects.
 
 Number
 ~~~~~~
-*   These are represented by the ``xlrd.XL_CELL_NUMBER`` constant.
-*   Cells of this type will have values that are ``float`` objects.
+*   These are represented by the :py:data:`xlrd.XL_CELL_NUMBER` constant.
+*   Cells of this type will have values that are :func:`float` objects.
 
 Date
 ~~~~
+.. note::
+    
+    Dates don't really exist in Excel files, they are merely Numbers with a particular number formatting.
 
-These are represented by the ``xlrd.XL_CELL_DATE`` constant.
+*   These are represented by the :py:mod:`xlrd.XL_CELL_DATE` constant.
+*   :py:mod:`xlrd` will return ``xlrd.XL_CELL_DATE` as the cell type if the number format string looks like a date.
+*   The :py:func:`xlrd.xldate_as_tuple` method is provided for 
+    turning the :func:`float` in a Date cell into a :func:`tuple` suitable for instantiating various :py:mod:`datetime` objects. 
 
-**NB:** Dates don't really exist in Excel files, they are merely Numbers with a particular number formatting.
-
-``xlrd`` will return ``xlrd.XL_CELL_DATE`` as the cell type if the number format string looks like a date.
-
-The ``xldate_as_tuple`` method is provided for turning the ``float`` in a Date cell into a tuple suitable for instantiating various date/time objects. This example shows how to use it:
+This example shows how to use it:
 
 ::
 

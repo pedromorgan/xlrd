@@ -65,11 +65,6 @@ _WINDOW2_options = (
     ("show_in_page_break_preview", 0),
     )
 
-##
-# <p>Contains the data for one worksheet.</p>
-#
-
-
 
 class Sheet(BaseObject):
     """Contains the data for one worksheet.

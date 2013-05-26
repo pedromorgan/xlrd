@@ -310,7 +310,7 @@ from .biffh import (
     XLRDError,
     biff_text_from_num,
     error_text_from_code,
-    XL_CELL_BLANK,
+    XL_CELL_BLANK,    
     XL_CELL_TEXT,
     XL_CELL_BOOLEAN,
     XL_CELL_ERROR,
@@ -319,13 +319,10 @@ from .biffh import (
     XL_CELL_NUMBER
     )
 
-
 from .formula import * # is constrained by __all__
 from .book import Book, colname #### TODO #### formula also has `colname` (restricted to 256 cols)
 from .sheet import empty_cell
-"""
-.. py:function:: xlrd.sheet.empty_cell
-"""
+
 
 from .xldate import XLDateError, xldate_as_tuple
 
@@ -339,8 +336,6 @@ try:
 except ImportError:
     MMAP_AVAILABLE = 0
 USE_MMAP = MMAP_AVAILABLE
-
-
 
 def open_workbook(filename=None,
     logfile=sys.stdout,

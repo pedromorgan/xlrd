@@ -137,36 +137,45 @@ def open_workbook_xls(filename=None,
         bk.release_resources()
     return bk
 
-##
-# For debugging: dump the file's BIFF records in char & hex.
-# @param filename The path to the file to be dumped.
-# @param outfile An open file, to which the dump is written.
-# @param unnumbered If true, omit offsets (for meaningful diffs).
+
 
 def dump(filename, outfile=sys.stdout, unnumbered=False):
+    """ For debugging: dump the file's BIFF records in char & hex.
+    
+    :param filename: The path to the file to be dumped.
+    :type filename: str
+    :param outfile:  An open file, to which the dump is written.
+    :type outfile: file
+    :param unnumbered: If True, omit offsets (for meaningful diffs).
+    :type unnumbered: bool
+     """
     bk = Book()
     bk.biff2_8_load(filename=filename, logfile=outfile, )
     biff_dump(bk.mem, bk.base, bk.stream_len, 0, outfile, unnumbered)
+   
+    
 
-##
-# For debugging and analysis: summarise the file's BIFF records.
-# I.e. produce a sorted file of (record_name, count).
-# @param filename The path to the file to be summarised.
-# @param outfile An open file, to which the summary is written.
 
 def count_records(filename, outfile=sys.stdout):
+    """For debugging and analysis: summarise the file's BIFF records.
+       I.e. produce a sorted file of (record_name, count).
+    :param filename: The path to the file to be summarised.
+    :param outfile: An open file, to which the summary is written.
+    """
     bk = Book()
     bk.biff2_8_load(filename=filename, logfile=outfile, )
     biff_count_records(bk.mem, bk.base, bk.stream_len, outfile)
 
-##
-# Information relating to a named reference, formula, macro, etc.
-# <br />  -- New in version 0.6.0
-# <br />  -- <i>Name information is <b>not</b> extracted from files older than
-# Excel 5.0 (Book.biff_version < 50)</i>
+
 
 class Name(BaseObject):
-
+    """Information relating to a named reference, formula, macro, etc.
+    
+    .. versionadded:: 0.6.0
+    .. note:: 
+        Name information is **not** extracted from files older than
+        Excel 5.0 (:py:attr:`xlrd.book.Book.biff_version` < 50)
+    """
     _repr_these = ['stack']
     book = None # parent
 
@@ -196,9 +205,9 @@ class Name(BaseObject):
     # (common examples: Print_Area, Print_Titles; see OOo docs for full list)
     builtin = 0
 
-    ##
-    # Function group. Relevant only if macro == 1; see OOo docs for values.
+
     funcgroup = 0
+    """Function group. Relevant only if macro == 1; see OOo docs for values."""
 
     ##
     # 0 = Formula definition; 1 = Binary data<br />  <i>No examples have been sighted.</i>
@@ -231,13 +240,13 @@ class Name(BaseObject):
     #
     result = None
 
-    ##
-    # This is a convenience method for the frequent use case where the name
-    # refers to a single cell.
-    # @return An instance of the Cell class.
-    # @throws XLRDError The name is not a constant absolute reference
-    # to a single cell.
     def cell(self):
+        """A convenience method for the frequent use case where the name
+           refers to a single cell.
+           
+        :rtype: An instance of the :py:class:`~xlrd.sheet.Cell` class.
+        :raises xlrd.biffh.XLRDError: The name is not a constant absolute reference to a single cell.
+        """
         res = self.result
         if res:
             # result should be an instance of the Operand class
@@ -256,17 +265,18 @@ class Name(BaseObject):
             )
         raise XLRDError("Not a constant absolute reference to a single cell")
 
-    ##
-    # This is a convenience method for the use case where the name
-    # refers to one rectangular area in one worksheet.
-    # @param clipped If true (the default), the returned rectangle is clipped
-    # to fit in (0, sheet.nrows, 0, sheet.ncols) -- it is guaranteed that
-    # 0 <= rowxlo <= rowxhi <= sheet.nrows and that the number of usable rows
-    # in the area (which may be zero) is rowxhi - rowxlo; likewise for columns.
-    # @return a tuple (sheet_object, rowxlo, rowxhi, colxlo, colxhi).
-    # @throws XLRDError The name is not a constant absolute reference
-    # to a single area in a single sheet.
+
     def area2d(self, clipped=True):
+        """A convenience method for the use case where the name
+            refers to one rectangular area in one worksheet.
+            
+        :param clipped: If True (the default), the returned rectangle is clipped
+                        to fit in (0, sheet.nrows, 0, sheet.ncols). It is guaranteed that
+                        0 <= rowxlo <= rowxhi <= sheet.nrows and that the number of usable rows
+                        in the area (which may be zero) is rowxhi - rowxlo; likewise for columns.
+        :rtype: A :func:`tuple` with (sheet_object, rowxlo, rowxhi, colxlo, colxhi).
+        :raises xlrd.biffh.XLRDError: The name is not a constant absolute reference to a single area in a single sheet.
+        """
         res = self.result
         if res:
             # result should be an instance of the Operand class
@@ -291,13 +301,18 @@ class Name(BaseObject):
             )
         raise XLRDError("Not a constant absolute reference to a single area in a single sheet")
 
-##
-# Contents of a "workbook".
-# <p>WARNING: You don't call this class yourself. You use the Book object that
-# was returned when you called xlrd.open_workbook("myfile.xls").</p>
+
 
 class Book(BaseObject):
-
+    """ Contents of a "workbook".
+    
+    .. warning:: 
+        
+        You don't call this class yourself. You use the 
+        :py:class:`~xlrd.book.Book` object that
+        was returned when you called :py:func:`xlrd.open_workbook`.
+    """
+    
     ##
     # The number of worksheets present in the workbook file.
     # This information is available even when no sheets have yet been loaded.
@@ -420,7 +435,7 @@ class Book(BaseObject):
     def sheets(self):
         """A list of all sheets in the book. All sheets not already loaded will be loaded.
         
-        :rtype: A list of :py:class:`xlrd.sheet.Sheet` objects
+        :rtype: A list of :py:class:`~xlrd.sheet.Sheet` objects
         """
         for sheetx in xrange(self.nsheets):
             if not self._sheet_list[sheetx]:
@@ -439,9 +454,9 @@ class Book(BaseObject):
     def sheet_by_name(self, sheet_name):
         """
         :param sheet_name: Name of sheet required
-        'type sheet_name: str
-        :rtype: A :ref:`~xlrd.sheet.Sheet` instance
-        :raises: :ref:`XLRDError`
+        :type sheet_name: str
+        :rtype: A :py:class:`~xlrd.sheet.Sheet` instance
+        :raises xlrd.biffh.XLRDError:
         """
         try:
             sheetx = self._sheet_names.index(sheet_name)
@@ -449,17 +464,25 @@ class Book(BaseObject):
             raise XLRDError('No sheet named <%r>' % sheet_name)
         return self.sheet_by_index(sheetx)
 
-    ##
-    # @return A list of the names of all the worksheets in the workbook file.
-    # This information is available even when no sheets have yet been loaded.
-    def sheet_names(self):
-        return self._sheet_names[:]
 
-    ##
-    # @param sheet_name_or_index Name or index of sheet enquired upon
-    # @return true if sheet is loaded, false otherwise
-    # <br />  -- New in version 0.7.1
+    def sheet_names(self):
+        """
+        :rtype: A :func:`list` of strings with the names of all the worksheets in the workbook file.
+        
+        .. note:: 
+        
+           This information is available even when no sheets have yet been loaded.
+        """
+        return self._sheet_names[:]
+    
     def sheet_loaded(self, sheet_name_or_index):
+        """
+        :param sheet_name_or_index: Name or index of sheet enquired upon
+        :rtype: :func:`bool` - True if sheet is loaded, otherwise False
+        :raises xlrd.biffh.XLRDError:
+        
+        .. versionadded:: 0.7.1    
+        """
         # using type(1) because int won't work with Python 2.1
         if isinstance(sheet_name_or_index, type(1)):
             sheetx = sheet_name_or_index
@@ -470,10 +493,15 @@ class Book(BaseObject):
                 raise XLRDError('No sheet named <%r>' % sheet_name_or_index)
         return self._sheet_list[sheetx] and True or False # Python 2.1 again
 
-    ##
-    # @param sheet_name_or_index Name or index of sheet to be unloaded.
-    # <br />  -- New in version 0.7.1
+
     def unload_sheet(self, sheet_name_or_index):
+        """Unloads a sheet
+        
+        :param sheet_name_or_index: Name or index of sheet to be unloaded.
+        :raises xlrd.biffh.XLRDError: Sheet not found
+        
+        .. versionadded:: 0.7.1
+        """
         # using type(1) because int won't work with Python 2.1
         if isinstance(sheet_name_or_index, type(1)):
             sheetx = sheet_name_or_index
@@ -484,16 +512,23 @@ class Book(BaseObject):
                 raise XLRDError('No sheet named <%r>' % sheet_name_or_index)
         self._sheet_list[sheetx] = None
         
-    ##
-    # This method has a dual purpose. You can call it to release
-    # memory-consuming objects and (possibly) a memory-mapped file
-    # (mmap.mmap object) when you have finished loading sheets in
-    # on_demand mode, but still require the Book object to examine the
-    # loaded sheets. It is also called automatically (a) when open_workbook
-    # raises an exception and (b) if you are using a "with" statement, when 
-    # the "with" block is exited. Calling this method multiple times on the 
-    # same object has no ill effect.
+
     def release_resources(self):
+        """Free memory
+        
+        This method has a dual purpose. 
+        
+        *   You can call it to release
+            memory-consuming objects and (possibly) a memory-mapped file
+            (:py:func:`mmap` object) when you have finished loading sheets in
+            on_demand mode, but still require the :py:class:`~xlrd.book.Book` object to examine the
+            loaded sheets. 
+        *   It is also called automatically 
+                a. When :py:func:`~xlrd.open_workbook` raises an exception 
+                b. If you are using a "with" statement, when  the "with" block is exited. 
+            
+        Calling this method multiple times on the  same object has no ill effect.
+        """
         self._resources_released = 1
         if hasattr(self.mem, "close"):
             # must be a mmap.mmap object
@@ -1369,7 +1404,7 @@ def display_cell_address(rowx, colx, relrow, relcol):
     return colpart + rowpart
 
 def unpack_SST_table(datatab, nstrings):
-    "Return list of strings"
+    """Return list of strings"""
     datainx = 0
     ndatas = len(datatab)
     data = datatab[0]

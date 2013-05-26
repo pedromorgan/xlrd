@@ -25,13 +25,9 @@ import sys
 from .timemachine import *
 
 class XLRDError(Exception):
-    """Generic exception raised for various Excel\ |trade| reader errors.
-    """
+    """Generic exception raised for various Excel reader errors."""
     pass
 
-##
-# Parent of almost all other classes in the package. Defines a common "dump" method
-# for debugging.
 
 class BaseObject(object):
     """Parent class of all classes in the :mod:`xlrd` module. Defines a common :meth:`dump` method
@@ -86,6 +82,7 @@ FUN, FDT, FNU, FGE, FTX = range(5) # unknown, date, number, general, text
 DATEFORMAT = FDT
 NUMBERFORMAT = FNU
 
+
 (
     XL_CELL_EMPTY,
     XL_CELL_TEXT,
@@ -95,6 +92,8 @@ NUMBERFORMAT = FNU
     XL_CELL_ERROR,
     XL_CELL_BLANK, # for use in debugging, gathering stats, etc
 ) = range(7)
+
+
 
 biff_text_from_num = {
     0:  "(not BIFF)",
@@ -293,7 +292,7 @@ def unpack_string_update_pos(data, pos, encoding, lenlen=1, known_len=None):
     return (unicode(data[pos:newpos], encoding), newpos)
 
 def unpack_unicode(data, pos, lenlen=2):
-    "Return unicode_strg"
+    """Return unicode_strg"""
     nchars = unpack('<' + 'BH'[lenlen-1], data[pos:pos+lenlen])[0]
     if not nchars:
         # Ambiguous whether 0-length string should have an "options" byte.
@@ -332,7 +331,7 @@ def unpack_unicode(data, pos, lenlen=2):
     return strg
 
 def unpack_unicode_update_pos(data, pos, lenlen=2, known_len=None):
-    "Return (unicode_strg, updated value of pos)"
+    """Return (unicode_strg, updated value of pos)"""
     if known_len is not None:
         # On a NAME record, the length byte is detached from the front of the string.
         nchars = known_len

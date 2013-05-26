@@ -1,12 +1,12 @@
 ######################################
-The :mod:`xlrd` Module nnnn
+:mod:`xlrd`
 ######################################
-    
+
+.. py:data:: xlrd.XL_CELL_BOOLEAN
+
 
 .. automodule:: xlrd
     :members:
     :undoc-members:
     :show-inheritance:
-    :inherited-members:
-    :private-members:
-    :special-members:  
+    :inherited-members: 

@@ -2,6 +2,8 @@
 :mod:`biffh`: Binary Interchange File Format (BIFF) Handler
 ===========================================================
 
+    
 .. automodule:: xlrd.biffh
-   :members:
-
+    :members:
+    :undoc-members:
+    :show-inheritance:

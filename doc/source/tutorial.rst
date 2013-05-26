@@ -279,7 +279,7 @@ Text
 
 Number
 ~~~~~~
-*   These are represented by the :py:data:`xlrd.XL_CELL_NUMBER` constant.
+*   These are represented by the :py:const:`xlrd.XL_CELL_NUMBER` constant.
 *   Cells of this type will have values that are :func:`float` objects.
 
 Date
@@ -288,12 +288,14 @@ Date
     
     Dates don't really exist in Excel files, they are merely Numbers with a particular number formatting.
 
-*   These are represented by the :py:mod:`xlrd.XL_CELL_DATE` constant.
-*   :py:mod:`xlrd` will return ``xlrd.XL_CELL_DATE` as the cell type if the number format string looks like a date.
+*   These are represented by the :py:const:`xlrd.XL_CELL_DATE` constant.
+*   :py:mod:`xlrd` will return :py:const:`xlrd.XL_CELL_DATE` as the cell type 
+    if the number format string looks like a date.
 *   The :py:func:`xlrd.xldate_as_tuple` method is provided for 
-    turning the :func:`float` in a Date cell into a :func:`tuple` suitable for instantiating various :py:mod:`datetime` objects. 
+    turning the :func:`float` in a Date cell into a :func:`tuple` suitable for 
+    instantiating various :py:mod:`datetime` objects. 
 
-This example shows how to use it:
+This dates.py example shows how to use it:
 
 ::
 
@@ -310,44 +312,46 @@ This example shows how to use it:
   time_value = xldate_as_tuple(sheet.cell(3,4).value,book.datemode)
   print time(*time_value[3:])
   print datetime(*time_value)
-  dates.py
+  
 
 Caveats:
 
-* Excel files have two possible date modes, one for files originally created on Windows and one for files originally created on an Apple machine. This is expressed as the ``datemode`` attribute of ``xlrd.Book`` objects and **must** be passed to :func:`xlrd.xldate_as_tuple`.
+*   Excel files have two possible date modes
+    *   one for files originally created on Windows 
+    *   and one for files originally created on an Apple machine. 
+*   This is expressed as the :py:attr:`~xlrd.book.Book.datemode` 
+    attribute of :py:class:`~xlrd.book.Book` objects 
+    and **must** be passed to :func:`~xlrd.xldate.xldate_as_tuple`.
 
-* The Excel file format has various problems with dates before 3 Jan 1904 that can cause date ambiguities that can result in :func:`xlrd.xldate_as_tuple` raising an :class:`xlrd.XLDateError`.
+* The Excel file format has various problems with dates before 3 Jan 1904 that can cause date ambiguities that can result in :func:`~xlrd.xldate.xldate_as_tuple` raising an :class:`~xlrd.xldate.XLDateError`.
 
 * The Excel formula function ``DATE()`` can return unexpected dates in certain circumstances.
 
 Boolean
 ~~~~~~~
 
-These are represented by the ``xlrd.XL_CELL_BOOLEAN`` constant.
-
-Cells of this type will have values that are ``bool`` objects.
+*   These are represented by the :py:const:`xlrd.XL_CELL_BOOLEAN` constant.
+*   Cells of this type will have values that are :func:`bool` objects.
 
 Error
 ~~~~~
 
-These are represented by the ``xlrd.XL_CELL_ERROR`` constant.
-
-Cells of this type will have values that are integers representing specific error codes.
-
-The ``error_text_from_code`` dictionary can be used to turn error codes into error messages:
+*   These are represented by the :py:data:`xlrd.XL_CELL_ERROR` constant.
+*   Cells of this type will have values that are integers representing specific error codes.
+*   The ``error_text_from_code`` dictionary can be used to turn error codes into error messages:
 
 ::
 
-  from xlrd import open_workbook,error_text_from_code
+  from xlrd import open_workbook, error_text_from_code
   
   book = open_workbook('types.xls')
   sheet = book.sheet_by_index(0)
   
   print error_text_from_code[sheet.cell(5,2).value]
   print error_text_from_code[sheet.cell(5,3).value]
-  errors.py
+  # errors.py
 
-For a simpler way of sensibly displaying all cell types, see ``xlutils.display``.
+For a simpler way of sensibly displaying all cell types, see :py:func:`xlutils.display`.
 
 Empty / Blank
 ~~~~~~~~~~~~~

@@ -28,7 +28,7 @@ from xlrd.info import __PYXL_MOD__
 html_context = {"XL": {"mod": __PYXL_MOD__}}
 
 intersphinx_mapping = {
-    #'xlutils': ('http://pythonhosted.org/xlutils/', None),
+    'xlutils': ('http://pythonhosted.org/xlutils/', None),
     #'xlwt': ('http://pythonhosted.org/xlwt/', None),
     'python': ('http://docs.python.org/', None),
 }
@@ -46,7 +46,7 @@ todo_include_todos = True
 
 autoclass_content = "both"
 autodoc_member_order = "alphabetical"
-autodoc_default_flags = ["inherited-members"]
+#autodoc_default_flags = ["inherited-members"]
 
 
 

@@ -272,16 +272,13 @@ cell types is listed in the following sections.
 Text
 ~~~~
 
-These are represented by the ``xlrd.XL_CELL_TEXT`` constant.
-
-Cells of this type will have values that are ``unicode`` objects.
+*   These are represented by the :py:class:`xlrd.XL_CELL_TEXT` constant.
+*   Cells of this type will have values that are `unicode` objects.
 
 Number
 ~~~~~~
-
-These are represented by the ``xlrd.XL_CELL_NUMBER`` constant.
-
-Cells of this type will have values that are ``float`` objects.
+*   These are represented by the ``xlrd.XL_CELL_NUMBER`` constant.
+*   Cells of this type will have values that are ``float`` objects.
 
 Date
 ~~~~

@@ -2096,34 +2096,44 @@ class MSTxo(BaseObject):
 ##    
 # <p> Represents a user "comment" or "note".
 # Note objects are accessible through Sheet.{@link #Sheet.cell_note_map}.
-# <br />-- New in version 0.7.2  
+# <br />-- New in version 
 # </p>
 class Note(BaseObject):
-    ##
-    # Author of note
+    """Represents a user "comment" or "note".
+    
+    * :class:`~xlrd.sheet.Note` objects are accessible through the :meth:`~xlrd.sheet.Sheet.cell_note_map` method.
+    
+    .. versionadded:: 0.7.2  
+    """
+    
     author = UNICODE_LITERAL('')
-    ##
-    # True if the containing column is hidden
-    col_hidden = 0 
-    ##
-    # Column index
+    """Author of note"""
+    
+    col_hidden = 0
+    """True if the containing column is hidden"""
+    
     colx = 0
-    ##
-    # List of (offset_in_string, font_index) tuples.
-    # Unlike Sheet.{@link #Sheet.rich_text_runlist_map}, the first offset should always be 0.
+    """Column index"""
+    
+    
+    #: List of (offset_in_string, font_index) tuples.
+    #: Unlike Sheet.{@link #Sheet.rich_text_runlist_map}, the first offset should always be 0.
     rich_text_runlist = None
-    ##
-    # True if the containing row is hidden
+    
     row_hidden = 0
-    ##
-    # Row index
+    """True if the containing row is hidden"""
+    
+    
     rowx = 0
-    ##
-    # True if note is always shown
+    """Row index"""
+    
     show = 0
-    ##
-    # Text of the note
+    """True if note is always shown"""
+    
     text = UNICODE_LITERAL('')
+    """
+    .. attribute text:: Text of the note
+    """
 
 ##
 # <p>Contains the attributes of a hyperlink.

@@ -2,9 +2,8 @@
 :mod:`xlrd.sheet`:
 ===========================================================
 
-blah blah blah
-
 .. automodule:: xlrd.sheet
     :members:
     :undoc-members:
     :show-inheritance:
+    :inherited-members:

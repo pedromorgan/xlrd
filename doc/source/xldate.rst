@@ -1,15 +1,9 @@
 ===========================================================
-:mod:`xlrd.xldate`: 
+:mod:`xlrd.xldate`: Convert datetime to Excel dates
 ===========================================================
-
-
-Exceptions:
-    * Foo
-Functions:
-    * Bar
 
 .. automodule:: xlrd.xldate
     :members:
     :undoc-members:
-    :show-inheritance:   
-       
+    :show-inheritance:
+    :inherited-members:

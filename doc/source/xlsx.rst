@@ -5,7 +5,7 @@
 .. automodule:: xlrd.xlsx
     :members:
     :undoc-members:
-    :show-inheritance:s
+    :show-inheritance:
 
 
        

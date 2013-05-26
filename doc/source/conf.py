@@ -14,7 +14,6 @@
 import sys, os
 
 # Help find the source of the xlrd module:
-
 sys.path = [ os.path.realpath("../..") ] + sys.path
 
 # If extensions (or modules to document with autodoc) are in another directory,
@@ -29,8 +28,8 @@ from xlrd.info import __PYXL_MOD__
 html_context = {"XL": {"mod": __PYXL_MOD__}}
 
 intersphinx_mapping = {
-    'xlutils': ('http://pythonhosted.org/xlutils/', None),
-    'xlwt': ('http://pythonhosted.org/xlwt/', None),
+    #'xlutils': ('http://pythonhosted.org/xlutils/', None),
+    #'xlwt': ('http://pythonhosted.org/xlwt/', None),
     'python': ('http://docs.python.org/', None),
 }
 
@@ -41,7 +40,7 @@ intersphinx_mapping = {
 
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
-extensions = ['sphinx.ext.autodoc', 'sphinx.ext.doctest', 'sphinx.ext.todo', 'sphinx.ext.coverage', 'sphinx.ext.pngmath', 'sphinx.ext.mathjax', 'sphinx.ext.viewcode',  'sphinx.ext.intersphinx']
+extensions = ['sphinx.ext.autodoc', 'sphinx.ext.autosummary',  'sphinx.ext.doctest', 'sphinx.ext.todo', 'sphinx.ext.coverage', 'sphinx.ext.pngmath', 'sphinx.ext.mathjax', 'sphinx.ext.viewcode',  'sphinx.ext.intersphinx']
 
 todo_include_todos = True
 
@@ -172,7 +171,7 @@ html_use_index = True
 html_split_index = False
 
 # If true, links to the reST sources are added to the pages.
-html_show_sourcelink = True
+html_show_sourcelink = False
 
 # If true, "Created using Sphinx" is shown in the HTML footer. Default is True.
 #html_show_sphinx = True

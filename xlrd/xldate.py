@@ -11,6 +11,19 @@
 
 # 2008-10-18 SJM Fix bug in xldate_from_date_tuple (affected some years after 2099)
 
+"""
+The conversion from days to (year, month, day) starts with
+an integral "julian day number" aka JDN.
+FWIW, JDN 0 corresponds to noon on Monday November 24 in Gregorian year -4713.
+
+More importantly:
+
+*   Noon on Gregorian 1900-03-01 (day 61 in the 1900-based system) is JDN 2415080.0
+*   Noon on Gregorian 1904-01-02 (day  1 in the 1904-based system) is JDN 2416482.0
+
+"""
+
+
 # The conversion from days to (year, month, day) starts with
 # an integral "julian day number" aka JDN.
 # FWIW, JDN 0 corresponds to noon on Monday November 24 in Gregorian year -4713.

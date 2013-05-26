@@ -1,4 +1,4 @@
-Quick Start - Reading Excel Files
+Quick Start
 ====================================
 
 All the examples shown below can be found in the ``xlrd`` directory of the course material.
@@ -99,14 +99,14 @@ The :py:class:`~xlrd.sheet.Sheet` object returned by any of
 the methods described above contain all the information to do with a worksheet and its contents.
 
 *   The :py:attr:`~xlrd.sheet.Sheet.name` attribute is a unicode representing the name of the worksheet.
-*   The :py:attr:`~xlrd.sheet.Sheet.nrows` and :py:attr:`~xlrd.sheet.Sheet.`ncols` attributes 
+*   The :py:attr:`~xlrd.sheet.Sheet.nrows` and :py:attr:`~xlrd.sheet.Sheet.ncols` attributes 
     contain the number of rows and the number of columns, respectively, in the worksheet.
 
 The following example shows how these can be used to iterate over and display the contents of one worksheet:
 
 ::
 
-  from xlrd import open_workbook,cellname
+  from xlrd import open_workbook, cellname
   
   book = open_workbook('odd.xls')
   sheet = book.sheet_by_index(0)
@@ -136,11 +136,12 @@ Getting a particular Cell
 *   The :py:meth:`~xlrd.sheet.Sheet.cell` method of a :py:class:`~xlrd.sheet.Sheet` object 
     can be used to return the contents of a particular cell.
 *   The :py:meth:`~xlrd.sheet.Sheet.cell` method returns 
-    a :py:class:`~xlrd.sheet.Cell` object. These objects have very few 
-    attributes, of which  ``value`` contains the actual value of 
-    the cell and ``ctype`` contains the type of the cell.
+    a :py:class:`~xlrd.sheet.Cell` object. 
+*   These objects have very few  attributes, of which  :py:attr:`~xlrd.sheet.Cell.value` contains 
+    the actual value of the cell and :py:attr:`~xlrd.sheet.Cell.ctype` contains the type of the cell.
 
 In addition, :py:class:`~xlrd.sheet.Sheet` objects have two methods for returning these two types of data. 
+
 *   The :py:meth:`~xlrd.sheet.Sheet.cell_value` method returns the value for a particular cell
 *   The :py:meth:`~xlrd.sheet.Sheet.cell_type` method returns the type of a particular cell. 
 *   These methods can be quicker to execute than retrieving the :py:meth:`~xlrd.sheet.Cell` object.
@@ -315,7 +316,7 @@ Caveats:
 
 * Excel files have two possible date modes, one for files originally created on Windows and one for files originally created on an Apple machine. This is expressed as the ``datemode`` attribute of ``xlrd.Book`` objects and **must** be passed to :func:`xlrd.xldate_as_tuple`.
 
-* The Excel file format has various problems with dates before 3 Jan 1904 that can cause date ambiguities that can result in :func:`xlrd.xldate.xldate_as_tuple` raising an XLDateError.
+* The Excel file format has various problems with dates before 3 Jan 1904 that can cause date ambiguities that can result in :func:`xlrd.xldate_as_tuple` raising an :class:`xlrd.XLDateError`.
 
 * The Excel formula function ``DATE()`` can return unexpected dates in certain circumstances.
 

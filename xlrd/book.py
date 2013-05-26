@@ -398,43 +398,51 @@ class Book(BaseObject):
     # <br /> -- New in version 0.6.1. Extracted only if open_workbook(..., formatting_info=True)
     colour_map = {}
 
-    ##
-    # If the user has changed any of the colours in the standard palette, the XLS
-    # file will contain a PALETTE record with 56 (16 for Excel 4.0 and earlier)
-    # RGB values in it, and this list will be e.g. [(r0, b0, g0), ..., (r55, b55, g55)].
-    # Otherwise this list will be empty. This is what you need if you are
-    # writing an output XLS file. If you want to render cells on screen or in a PDF
-    # file, use colour_map.
-    # <br /> -- New in version 0.6.1. Extracted only if open_workbook(..., formatting_info=True)
     palette_record = []
+    """If the user has changed any of the colours in the standard palette, the XLS
+    file will contain a PALETTE record with 56 (16 for Excel 4.0 and earlier)
+    RGB values in it, and this list will be e.g. [(r0, b0, g0), ..., (r55, b55, g55)].
+    Otherwise this list will be empty. This is what you need if you are
+    writing an output XLS file. If you want to render cells on screen or in a PDF
+    file, use colour_map.
+    
+    ..versionadded::  New in version 0.6.1. Extracted only if open_workbook(..., formatting_info=True)
+    """
 
-    ##
-    # Time in seconds to extract the XLS image as a contiguous string (or mmap equivalent).
+
     load_time_stage_1 = -1.0
-
-    ##
-    # Time in seconds to parse the data from the contiguous string (or mmap equivalent).
+    """Time in seconds to extract the XLS image as a contiguous string (or mmap equivalent)."""
+    
     load_time_stage_2 = -1.0
+    """Time in seconds to parse the data from the contiguous string (or mmap equivalent)."""
 
-    ##
-    # @return A list of all sheets in the book.
-    # All sheets not already loaded will be loaded.
+
     def sheets(self):
+        """A list of all sheets in the book. All sheets not already loaded will be loaded.
+        
+        :rtype: A list of :py:class:`xlrd.sheet.Sheet` objects
+        """
         for sheetx in xrange(self.nsheets):
             if not self._sheet_list[sheetx]:
                 self.get_sheet(sheetx)
         return self._sheet_list[:]
 
-    ##
-    # @param sheetx Sheet index in range(nsheets)
-    # @return An object of the Sheet class
-    def sheet_by_index(self, sheetx):
-        return self._sheet_list[sheetx] or self.get_sheet(sheetx)
+    def sheet_by_index(self, index):
+        """
+        :param sheetx: index in range(nsheets)
+        :type sheetx: int
+        :rtype: A  :py:class:`~xlrd.sheet.Sheet` instance
+        """
+        return self._sheet_list[index] or self.get_sheet(index)
 
-    ##
-    # @param sheet_name Name of sheet required
-    # @return An object of the Sheet class
+
     def sheet_by_name(self, sheet_name):
+        """
+        :param sheet_name: Name of sheet required
+        'type sheet_name: str
+        :rtype: A :ref:`~xlrd.sheet.Sheet` instance
+        :raises: :ref:`XLRDError`
+        """
         try:
             sheetx = self._sheet_names.index(sheet_name)
         except ValueError:

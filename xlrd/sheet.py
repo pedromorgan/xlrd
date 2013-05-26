@@ -471,18 +471,25 @@ class Sheet(BaseObject):
     def row_len(self, rowx):
         return len(self._cell_values[rowx])
 
-    ##
-    # Returns a sequence of the {@link #Cell} objects in the given row.
     def row(self, rowx):
+        """Returns a sequence of the cell objects in the given row.
+        
+        :param rowx: The row index
+        :type rowx: int
+        :rtype: list of :py:class:`xlrd.sheet.Cell` instances
+        """
         return [
             self.cell(rowx, colx)
             for colx in xrange(len(self._cell_values[rowx]))
             ]
 
-    ##
-    # Returns a slice of the types
-    # of the cells in the given row.
     def row_types(self, rowx, start_colx=0, end_colx=None):
+        """Returns a slice of the types of the cells in the given row.
+        
+        :param rowx: The row index
+        :type rowx: int
+        :rtype: A :py:`list` of :py:class:`xlrd.sheet.Cell` instances
+        """
         if end_colx is None:
             return self._cell_types[rowx][start_colx:]
         return self._cell_types[rowx][start_colx:end_colx]

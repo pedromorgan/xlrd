@@ -1,10 +1,11 @@
 ===========================================================
-:mod:`xlrd.book`: 
+:mod:`xlrd.xlsx`: 
 ===========================================================
 
-.. automodule:: xlrd.book
+.. automodule:: xlrd.xlsx
     :members:
     :undoc-members:
-    :show-inheritance:
-    :private-members:
-    :special-members:
+    :show-inheritance:s
+
+
+       

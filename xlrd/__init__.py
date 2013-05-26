@@ -305,6 +305,7 @@ from . import licences
 
 import sys, zipfile, pprint
 from . import timemachine
+
 from .biffh import (
     XLRDError,
     biff_text_from_num,
@@ -317,9 +318,15 @@ from .biffh import (
     XL_CELL_DATE,
     XL_CELL_NUMBER
     )
+
+
 from .formula import * # is constrained by __all__
 from .book import Book, colname #### TODO #### formula also has `colname` (restricted to 256 cols)
 from .sheet import empty_cell
+"""
+.. py:function:: xlrd.sheet.empty_cell
+"""
+
 from .xldate import XLDateError, xldate_as_tuple
 
 if sys.version.startswith("IronPython"):
@@ -357,52 +364,56 @@ def open_workbook(filename=None,
     :type verbosity: int
 
     :param pickleable: Default is True. 
-        *   In Python 2.4 or earlier, setting to false will cause
-            use of array.array objects which save some memory but can't be pickled.  
-        *    In Python 2.5,array.arrays are used unconditionally. 
+        
+        *   In Python 2.4 or earlier, setting to False will cause
+            use of :class:`~array.array` objects which save some memory but can't be pickled.  
+        *   In Python 2.5, :class:`~array.array` are used unconditionally. 
         
         .. note::
         
-            If you have large files that you need to
-            read multiple times, it can be much faster to :meth:`cPickle.dump()` the
-            :py:class:`xlrd.book.Book` object once, and use :meth:`cPickle.load()` multiple times.
-
+            If you have large files that you need to read multiple times, 
+            it can be much faster to :func:`pickle.dump()` the
+            :py:class:`xlrd.book.Book` object once, and use :func:`pickle.load()` multiple times.
+    :type pickleable: bool
+    
     :param use_mmap: Map the spreadsheet's contents into memory, if `file_contents` is
-       `None`. Memory mapped files are used if the :py::mod:`mmap` module exists.
-    :type use_mmap: Boolean
+       `None`. Memory mapped files are used if the :mod:`mmap` module exists.
+    :type use_mmap: bool
 
     :param file_contents: The spreadsheet's contents, overriding filename. filename is still useful for error messagse.
-    :type file_contents: str, :mod:`mmap.mmap` object, :class:`file`-like object or None
+    :type file_contents: :func:`str`, :mod:`mmap` object, :mod:`file`-like object or None
 
     :param encoding_override: Used to overcome missing or bad codepage information
        in older-version files. Refer to discussion in the <b>Unicode</b> section above.
 
        .. versionadded:: 0.6.0
 
-    :param formatting_info: Governs provision of a reference to an XF (eXtended Format) object
-       for each cell in the worksheet.
+    :param formatting_info: 
+    
+        Governs provision of a reference to an XF (eXtended Format) object
+        for each cell in the worksheet. Default is *False*.
 
-       Default is `False`. This is backwards compatible and saves memory. "Blank" cells (those
-       with their own formatting information but no data) are treated as empty (by ignoring
-       the file's BLANK and MULBLANK records). It cuts off any bottom "margin" of rows of
-       empty (and blank) cells and any right "margin" of columns of empty (and blank) cells.
-       Only cell_value and cell_type are available.
+        This is backwards compatible and saves memory. "Blank" cells (those
+        with their own formatting information but no data) are treated as empty (by ignoring
+        the file's BLANK and MULBLANK records). It cuts off any bottom "margin" of rows of
+        empty (and blank) cells and any right "margin" of columns of empty (and blank) cells.
+        Only cell_value and cell_type are available.
 
-       `True` provides all cells, including empty and blank cells.  Extended formatting
-       information is available for each cell.
+        **True** provides all cells, including empty and blank cells.  Extended formatting
+        information is available for each cell.
 
        .. versionadded:: 0.6.1
 
-    :type formatting_info: Boolean
+    :type formatting_info: bool
 
     :param on_demand: Governs whether sheets are all loaded initially or when demanded by the
        caller. Please refer back to the section "Loading worksheets on demand" for details.
 
        .. versionadded:: 0.7.1
 
-    :type on_demand: Boolean
+    :type on_demand: bool
 
-    :return: An instance of the :class:`Book` class.
+    :return: An instance of the :class:`~xlrd.book.Book` class.
     """
     peeksz = 4
     if file_contents:

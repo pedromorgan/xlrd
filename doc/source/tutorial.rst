@@ -244,23 +244,24 @@ Unicode
 -------
 
 All text attributes and values used by :py:mod:`xlrd` will be either 
-unicode objects or, in rare cases, ascii strings.
+:func:`unicode` objects or, in rare cases, ascii strings.
 
 Each piece of text in an Excel file written by Microsoft Excel is encoded into one of the following:
 
 *   Latin1, if it fits
 *   UTF_16_LE, if it doesn't fit into Latin1
 *   In older files, by an encoding specified by an MS codepage. These are mapped 
-    to Python encodings by ``xlrd`` and still result in unicode objects.
+    to Python encodings by :mod:`xlrd` and still result in :func:`unicode` objects.
 
 In rare cases, other software has been known to write no codepage or the wrong codepage 
-into Excel files. In this case, the correct encoding may need to 
+into Excel files. In this case, the correct **encoding** may need to 
 be specified to :py:func:`xlrd.open_workbook`.
 
 ::
 
   from xlrd import open_workbook
-  book = open_workbook('dodgy.xls',encoding='cp1252')
+  book = open_workbook('dodgy.xls', encoding='cp1252')
+
 
 Types of Cell
 -------------
@@ -312,9 +313,9 @@ This example shows how to use it:
 
 Caveats:
 
-* Excel files have two possible date modes, one for files originally created on Windows and one for files originally created on an Apple machine. This is expressed as the ``datemode`` attribute of ``xlrd.Book`` objects and **must** be passed to ``xldate_as_tuple``.
+* Excel files have two possible date modes, one for files originally created on Windows and one for files originally created on an Apple machine. This is expressed as the ``datemode`` attribute of ``xlrd.Book`` objects and **must** be passed to :func:`xlrd.xldate_as_tuple`.
 
-* The Excel file format has various problems with dates before 3 Jan 1904 that can cause date ambiguities that can result in ``xldate_as_tuple`` raising an XLDateError.
+* The Excel file format has various problems with dates before 3 Jan 1904 that can cause date ambiguities that can result in :func:`xlrd.xldate.xldate_as_tuple` raising an XLDateError.
 
 * The Excel formula function ``DATE()`` can return unexpected dates in certain circumstances.
 

@@ -1,10 +1,7 @@
 ===========================================================
-:mod:`xlrd.sheet`:
+:mod:`biffh`: Binary Interchange File Format (BIFF) Handler
 ===========================================================
 
-blah blah blah
+.. automodule:: xlrd.biffh
+   :members:
 
-.. automodule:: xlrd.sheet
-    :members:
-    :undoc-members:
-    :show-inheritance:

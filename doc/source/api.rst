@@ -11,3 +11,6 @@ xlrd API
     sheet
     formatting
     biffh
+    xldate
+    xlsx
+   

@@ -31,27 +31,36 @@ class XLDateBadTuple(XLDateError): pass
 
 _XLDAYS_TOO_LARGE = (2958466, 2958466 - 1462) # This is equivalent to 10000-01-01
 
-##
-# Convert an Excel number (presumed to represent a date, a datetime or a time) into
-# a tuple suitable for feeding to datetime or mx.DateTime constructors.
-# @param xldate The Excel number
-# @param datemode 0: 1900-based, 1: 1904-based.
-# <br>WARNING: when using this function to
-# interpret the contents of a workbook, you should pass in the Book.datemode
-# attribute of that workbook. Whether
-# the workbook has ever been anywhere near a Macintosh is irrelevant.
-# @return Gregorian (year, month, day, hour, minute, nearest_second).
-# <br>Special case: if 0.0 <= xldate < 1.0, it is assumed to represent a time;
-# (0, 0, 0, hour, minute, second) will be returned.
-# <br>Note: 1904-01-01 is not regarded as a valid date in the datemode 1 system; its "serial number"
-# is zero.
-# @throws XLDateNegative xldate < 0.00
-# @throws XLDateAmbiguous The 1900 leap-year problem (datemode == 0 and 1.0 <= xldate < 61.0)
-# @throws XLDateTooLarge Gregorian year 10000 or later
-# @throws XLDateBadDatemode datemode arg is neither 0 nor 1
-# @throws XLDateError Covers the 4 specific errors
 
 def xldate_as_tuple(xldate, datemode):
+    """Convert an Excel number (presumed to represent a date, a datetime or a time) into
+        a tuple suitable for feeding to :mod:`datetime` or mx.DateTime constructors.
+
+    .. warning::
+        
+        When using this function to  interpret the contents of a workbook, 
+        you should pass in the Book.datemode
+        attribute of that workbook. Whether
+        the workbook has ever been anywhere near a Macintosh is irrelevant.
+        
+    .. note::          
+        
+        *   Special Case -  if 0.0 <= xldate < 1.0, it is assumed to represent a time;
+                # (0, 0, 0, hour, minute, second) will be returned.
+                
+        *   1904-01-01 is not regarded as a valid date in the datemode 1 system; its "serial number"  is zero.
+                
+    :param xldate: The Excel number
+    :type xldate: int
+    :param datemode:  0: 1900-based, 1: 1904-based.
+    :type datemode: int
+    :returns:  A :func:`tuple` with Gregorian (year, month, day, hour, minute, nearest_second).
+    :raises xlrd.xldate.XLDateNegative:  xldate < 0.00
+    :raises xlrd.xldate.XLDateAmbiguous: The 1900 leap-year problem (datemode == 0 and 1.0 <= xldate < 61.0)
+    :raises xlrd.xldate.XLDateTooLarge: Gregorian year 10000 or later
+    :raises xlrd.xldate.XLDateBadDatemode: datemode arg is neither 0 nor 1
+    :raises xlrd.xldate.XLDateError: Covers the 4 specific errors
+    """
     if datemode not in (0, 1):
         raise XLDateBadDatemode(datemode)
     if xldate == 0.00:
@@ -100,19 +109,24 @@ def _leap(y):
 
 _days_in_month = (None, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31)
 
-##
-# Convert a date tuple (year, month, day) to an Excel date.
-# @param year Gregorian year.
-# @param month 1 <= month <= 12
-# @param day 1 <= day <= last day of that (year, month)
-# @param datemode 0: 1900-based, 1: 1904-based.
-# @throws XLDateAmbiguous The 1900 leap-year problem (datemode == 0 and 1.0 <= xldate < 61.0)
-# @throws XLDateBadDatemode datemode arg is neither 0 nor 1
-# @throws XLDateBadTuple (year, month, day) is too early/late or has invalid component(s)
-# @throws XLDateError Covers the specific errors
 
 def xldate_from_date_tuple(date_tuple, datemode):
-    """Create an excel date from a tuple of (year, month, day)"""
+    """Convert a date tuple (year, month, day) to an Excel date
+    
+    :param date_tuple:
+    
+        *   **year** - Gregorian year.
+        *   **month** - 1 <= month <= 12
+        *   **param day** - 1 <= day <= last day of that (year, month)
+    :type date_tuple: tuple
+    :param datemode: 0: 1900-based, 1: 1904-based.
+    :type datemode: int
+    :return: A :func:`float` with the excel date
+    :raises xlrd.xldate.XLDateAmbiguous: The 1900 leap-year problem (datemode == 0 and 1.0 <= xldate < 61.0)
+    :raises xlrd.xldate.XLDateBadDatemode: datemode arg is neither 0 nor 1
+    :raises xlrd.xldate.XLDateBadTuple: (year, month, day) is too early/late or has invalid component(s)
+    :raises xlrd.xldate.XLDateError: Covers the specific errors
+    """
     year, month, day = date_tuple
 
     if datemode not in (0, 1):
@@ -145,27 +159,40 @@ def xldate_from_date_tuple(date_tuple, datemode):
         raise XLDateAmbiguous("Before 1900-03-01: %r" % ((year, month, day),))
     return float(xldays)
 
-##
-# Convert a time tuple (hour, minute, second) to an Excel "date" value (fraction of a day).
-# @param hour 0 <= hour < 24
-# @param minute 0 <= minute < 60
-# @param second 0 <= second < 60
-# @throws XLDateBadTuple Out-of-range hour, minute, or second
+
 
 def xldate_from_time_tuple(time_tuple):
-    """Create an excel date from a tuple of (hour, minute, second)"""
+    """Convert a time tuple (hour, minute, second) to an Excel "date" value (fraction of a day)
+ 
+    :param time_tuple:
+    
+    *   **hour**: 0 <= hour < 24
+    *   **minute**: 0 <= minute < 60
+    *   **second**: 0 <= second < 60
+    
+    :type time_tuple: tuple
+    :return: A :func:`float` with the excel date
+    :raises xlrd.xldate.XLDateBadTuple:  Out-of-range hour, minute, or seconds
+    """
     hour, minute, second = time_tuple
     if 0 <= hour < 24 and 0 <= minute < 60 and 0 <= second < 60:
         return ((second / 60.0 + minute) / 60.0 + hour) / 24.0
     raise XLDateBadTuple("Invalid (hour, minute, second): %r" % ((hour, minute, second),))
 
-##
-# Convert a datetime tuple (year, month, day, hour, minute, second) to an Excel date value.
-# For more details, refer to other xldate_from_*_tuple functions.
-# @param datetime_tuple (year, month, day, hour, minute, second)
-# @param datemode 0: 1900-based, 1: 1904-based.
+
 
 def xldate_from_datetime_tuple(datetime_tuple, datemode):
+    """Convert a datetime tuple (year, month, day, hour, minute, second) to an Excel date value.
+    
+    For more details, refer to :func:`~xlrd.xldate.xldate_from_time_tuple`
+    and :func:`~xlrd.xldate.xldate_from_date_tuple` functions.
+    
+    :param datetime_tuple: (year, month, day, hour, minute, second)
+    :type datetime_tuple: tuple
+    :param datemode 0: 1900-based, 1: 1904-based.
+    :type datemode: int
+    :return: A :func:`float` with the excel date
+    """
     return (
         xldate_from_date_tuple(datetime_tuple[:3], datemode)
         +

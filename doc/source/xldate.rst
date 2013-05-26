@@ -1,10 +1,15 @@
 ===========================================================
-:mod:`xlrd.book`: 
+:mod:`xlrd.xldate`: 
 ===========================================================
 
-.. automodule:: xlrd.book
+
+Exceptions:
+    * Foo
+Functions:
+    * Bar
+
+.. automodule:: xlrd.xldate
     :members:
     :undoc-members:
-    :show-inheritance:
-    :private-members:
-    :special-members:
+    :show-inheritance:   
+       

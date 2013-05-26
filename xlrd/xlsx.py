@@ -130,7 +130,7 @@ def cooked_text(self, elem):
     return ensure_unicode(unescape(t))
 
 def get_text_from_si_or_is(self, elem, r_tag=U_SSML12+'r', t_tag=U_SSML12 +'t'):
-    "Returns unescaped unicode"
+    """Returns unescaped unicode"""
     accum = []
     for child in elem:
         # self.dump_elem(child)

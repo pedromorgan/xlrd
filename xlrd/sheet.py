@@ -2237,7 +2237,10 @@ class Hyperlink(BaseObject):
     quicktip = None
     """The text of the "quick tip" displayed when the cursor hovers over the hyperlink."""
      
-    
+
+
+
+
 
 # === helpers ===
 

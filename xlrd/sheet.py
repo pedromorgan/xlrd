@@ -1571,13 +1571,13 @@ class Sheet(BaseObject):
     def update_cooked_mag_factors(self):
         """
         Cached values are used ONLY for the non-active view mode.
-        # When the user switches to the non-active view mode,
-        # if the cached value for that mode is not valid,
-        # Excel pops up a window which says:
-        # "The number must be between 10 and 400. Try again by entering a number in this range."
-        # When the user hits OK, it drops into the non-active view mode
-        # but uses the magn from the active mode.
-        # NOTE: definition of "valid" depends on mode ... see below
+        When the user switches to the non-active view mode,
+        if the cached value for that mode is not valid,
+        Excel pops up a window which says:
+        *The number must be between 10 and 400. Try again by entering a number in this range.*
+        When the user hits OK, it drops into the non-active view mode
+        but uses the magn from the active mode.
+        NOTE: definition of "valid" depends on mode ... see below
         """
         blah = DEBUG or self.verbosity > 0
         if self.show_in_page_break_preview:
@@ -2305,7 +2305,7 @@ class Cell(BaseObject):
     +--------------------+----+-----------------------------------------------------------------+
     |XL_CELL_TEXT        |1   |a :func:`unicode` string                                         |
     +--------------------+----+-----------------------------------------------------------------+
-    |XL_CELL_NUMBER      |2   |:func:`float`                                                     |
+    |XL_CELL_NUMBER      |2   |:func:`float`                                                    |
     +--------------------+----+-----------------------------------------------------------------+
     |XL_CELL_DATE        |3   |:func:`float`                                                    |
     +--------------------+----+-----------------------------------------------------------------+

@@ -2221,66 +2221,48 @@ ctype_text = {
     XL_CELL_BLANK: 'blank',
     }
 
-##
-# <p>Contains the data for one cell.</p>
-#
-# <p>WARNING: You don't call this class yourself. You access Cell objects
-# via methods of the {@link #Sheet} object(s) that you found in the {@link #Book} object that
-# was returned when you called xlrd.open_workbook("myfile.xls").</p>
-# <p> Cell objects have three attributes: <i>ctype</i> is an int, <i>value</i>
-# (which depends on <i>ctype</i>) and <i>xf_index</i>.
-# If "formatting_info" is not enabled when the workbook is opened, xf_index will be None.
-# The following table describes the types of cells and how their values
-# are represented in Python.</p>
-#
-# <table border="1" cellpadding="7">
-# <tr>
-# <th>Type symbol</th>
-# <th>Type number</th>
-# <th>Python value</th>
-# </tr>
-# <tr>
-# <td>XL_CELL_EMPTY</td>
-# <td align="center">0</td>
-# <td>empty string u''</td>
-# </tr>
-# <tr>
-# <td>XL_CELL_TEXT</td>
-# <td align="center">1</td>
-# <td>a Unicode string</td>
-# </tr>
-# <tr>
-# <td>XL_CELL_NUMBER</td>
-# <td align="center">2</td>
-# <td>float</td>
-# </tr>
-# <tr>
-# <td>XL_CELL_DATE</td>
-# <td align="center">3</td>
-# <td>float</td>
-# </tr>
-# <tr>
-# <td>XL_CELL_BOOLEAN</td>
-# <td align="center">4</td>
-# <td>int; 1 means TRUE, 0 means FALSE</td>
-# </tr>
-# <tr>
-# <td>XL_CELL_ERROR</td>
-# <td align="center">5</td>
-# <td>int representing internal Excel codes; for a text representation,
-# refer to the supplied dictionary error_text_from_code</td>
-# </tr>
-# <tr>
-# <td>XL_CELL_BLANK</td>
-# <td align="center">6</td>
-# <td>empty string u''. Note: this type will appear only when
-# open_workbook(..., formatting_info=True) is used.</td>
-# </tr>
-# </table>
-#<p></p>
+
 
 class Cell(BaseObject):
-
+    """Contains the data for one cell
+    
+    .. warning;:
+    
+        You don't call this class yourself. You access Cell objects
+        via methods of the :py:class:`~xlrd.sheet.Sheet` object(s) 
+        that you found in the :py:class:`~xlrd.book.Book` object that
+        was returned when you called :py:func:`xlrd.open_workbook`.
+        
+    Cell objects have three attributes: 
+        * :py:attr:`~xlrd.sheet.Cell.ctype` - is an :func:`int` with the codes below.
+        * :py:attr:`~xlrd.sheet.Cell.value` - which depends on :py:attr:`~xlrd.sheet.Cell.ctype` 
+        * :py:attr:`~xlrd.sheet.Cell.xf_index` - If **formatting_info** is not enabled 
+          with :py:func:`~xlrd.open_workbook`, :py:attr:`~xlrd.sheet.Cell.xf_index` will be *None*.
+          
+    The following table describes the types of cells and how their values
+    are represented in Python.
+    
+    +--------------------+----+-----------------------------------------------------------------+
+    |Type symbol         |No  |Python value                                                     |
+    +====================+====+=================================================================+
+    |XL_CELL_EMPTY       |0   |empty string u''                                                 |
+    +--------------------+----+-----------------------------------------------------------------+
+    |XL_CELL_TEXT        |1   |a :func:`unicode` string                                         |
+    +--------------------+----+-----------------------------------------------------------------+
+    |XL_CELL_NUMBER      |2   |:func:`float                                                     |
+    +--------------------+----+-----------------------------------------------------------------+
+    |XL_CELL_DATE        |3   |:func:`float`                                                    |
+    +--------------------+----+-----------------------------------------------------------------+
+    |XL_CELL_BOOLEAN     |4   |:func:`int` - 1 means TRUE, 0 means FALSE                        |
+    +--------------------+----+-----------------------------------------------------------------+
+    |XL_CELL_ERROR       |5   |:func:`int` representing internal Excel codes;  for a text      ,|
+    |                    |    |representation refer to the supplied dictionary                  |
+    |                    |    |error_text_from_code                                             |
+    +--------------------+----+-----------------------------------------------------------------+
+    |XL_CELL_BLANK       |6   |empty string u''. Note: this type will appear only when          |
+    |                    |    |open_workbook(..., formatting_info=True) is used.                |
+    +--------------------+----+-----------------------------------------------------------------+
+    """
     __slots__ = ['ctype', 'value', 'xf_index']
 
     def __init__(self, ctype, value, xf_index=None):
@@ -2301,63 +2283,66 @@ empty_cell = Cell(XL_CELL_EMPTY, '')
 
 ##### =============== Colinfo and Rowinfo ============================== #####
 
-##
-# Width and default formatting information that applies to one or
-# more columns in a sheet. Derived from COLINFO records.
-#
-# <p> Here is the default hierarchy for width, according to the OOo docs:
-#
-# <br />"""In BIFF3, if a COLINFO record is missing for a column,
-# the width specified in the record DEFCOLWIDTH is used instead.
-#
-# <br />In BIFF4-BIFF7, the width set in this [COLINFO] record is only used,
-# if the corresponding bit for this column is cleared in the GCW
-# record, otherwise the column width set in the DEFCOLWIDTH record
-# is used (the STANDARDWIDTH record is always ignored in this case [see footnote!]).
-#
-# <br />In BIFF8, if a COLINFO record is missing for a column,
-# the width specified in the record STANDARDWIDTH is used.
-# If this [STANDARDWIDTH] record is also missing,
-# the column width of the record DEFCOLWIDTH is used instead."""
-# <br />
-#
-# Footnote:  The docs on the GCW record say this:
-# """<br />
-# If a bit is set, the corresponding column uses the width set in the STANDARDWIDTH
-# record. If a bit is cleared, the corresponding column uses the width set in the
-# COLINFO record for this column.
-# <br />If a bit is set, and the worksheet does not contain the STANDARDWIDTH record, or if
-# the bit is cleared, and the worksheet does not contain the COLINFO record, the DEFCOLWIDTH
-# record of the worksheet will be used instead.
-# <br />"""<br />
-# At the moment (2007-01-17) xlrd is going with the GCW version of the story.
-# Reference to the source may be useful: see the computed_column_width(colx) method
-# of the Sheet class.
-# <br />-- New in version 0.6.1
-# </p>
+
 
 class Colinfo(BaseObject):
-    ##
-    # Width of the column in 1/256 of the width of the zero character,
-    # using default font (first FONT record in the file).
+    """Width and default formatting information that applies to one or
+       more columns in a sheet. Derived from COLINFO records.
+    
+    .. note::
+    
+        Here is the default hierarchy for width, according to the OOo docs:
+        
+            * In BIFF3, if a COLINFO record is missing for a column,
+              the width specified in the record DEFCOLWIDTH is used instead.
+            
+            * In BIFF4-BIFF7, the width set in this [COLINFO] record is only used,
+              if the corresponding bit for this column is cleared in the GCW
+              record, otherwise the column width set in the DEFCOLWIDTH record
+              is used (the STANDARDWIDTH record is always ignored in this case [see footnote!]).
+
+            * In BIFF8, if a COLINFO record is missing for a column,
+              the width specified in the record STANDARDWIDTH is used.
+              If this [STANDARDWIDTH] record is also missing,
+              the column width of the record DEFCOLWIDTH is used instead.
+        
+        
+        **Footnote:**  The docs on the GCW record say this:
+        
+            * If a bit is set, the corresponding column uses the width set in the STANDARDWIDTH
+              record. If a bit is cleared, the corresponding column uses the width set in the
+              COLINFO record for this column.
+            * If a bit is set, and the worksheet does not contain the STANDARDWIDTH record, or if
+              the bit is cleared, and the worksheet does not contain the COLINFO record, the DEFCOLWIDTH
+              record of the worksheet will be used instead.
+        
+        At the moment (2007-01-17) xlrd is going with the GCW version of the story.
+        Reference to the source may be useful: see the :py:meth:`~xlrd.sheet.Sheet.computed_column_width` 
+        method  of the :py:class:`~xlrd.sheet.Sheet` class.
+    
+    .. versionadded:: 0.6.1
+    """
+    
     width = 0
-    ##
-    # XF index to be used for formatting empty cells.
+    """Width of the column in 1/256 of the width of the zero character,
+       using default font (first FONT record in the file).
+    """
+    
     xf_index = -1
-    ##
-    # 1 = column is hidden
+    """XF index to be used for formatting empty cells."""
+    
     hidden = 0
-    ##
-    # Value of a 1-bit flag whose purpose is unknown
-    # but is often seen set to 1
+    """1 = column is hidden"""
+    
     bit1_flag = 0
-    ##
-    # Outline level of the column, in range(7).
-    # (0 = no outline)
+    """Value of a 1-bit flag whose purpose is unknown but is often seen set to 1"""
+    
     outline_level = 0
-    ##
-    # 1 = column is collapsed
+    """Outline level of the column, in range(7). (0 = no outline)"""
+    
     collapsed = 0
+    """1 = column is collapsed"""
+    
 
 _USE_SLOTS = 1
 

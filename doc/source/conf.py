@@ -29,7 +29,7 @@ html_context = {"XL": {"mod": __PYXL_MOD__}}
 
 intersphinx_mapping = {
     'xlutils': ('http://pythonhosted.org/xlutils/', None),
-    'xlwt': ('http://pythonhosted.org/xlwt/', None),
+    #'xlwt': ('http://pythonhosted.org/xlwt/', None),
     'python': ('http://docs.python.org/', None),
 }
 

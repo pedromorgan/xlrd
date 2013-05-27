@@ -76,227 +76,270 @@ class Sheet(BaseObject):
     
     
     .. warning:: 
-        You don't call this class yourself. You access Sheet objects via the 
-        :py:class:`~xlrl.bool.Book` object that
-        was returned when you called :py:func:`xlrd.open_workbook`("myfile.xls")
+    
+        You don't call this class yourself. You access :py:class:`~xlrd.sheet.Sheet` objects via the 
+        :py:class:`~xlrd.book.Book` object that
+        was returned when you called :py:func:`xlrd.open_workbook`
     """
+    
     name = ''
 
-    ##
-    # A reference to the Book object to which this sheet belongs.
-    # Example usage: some_sheet.book.datemode
     book = None
+    """A reference to the :py:class:`~xlrd.book.Book` object to which this sheet belongs."""
     
-    ##
-    # Number of rows in sheet. A row index is in range(thesheet.nrows).
+    
     nrows = 0
+    """Number of rows in sheet. A row index is in range(thesheet.nrows)."""
+    
 
-    ##
-    # Nominal number of columns in sheet. It is 1 + the maximum column index
-    # found, ignoring trailing empty cells. See also open_workbook(ragged_rows=?)
-    # and Sheet.{@link #Sheet.row_len}(row_index).
     ncols = 0
+    """Nominal number of columns in sheet. It is 1 + the maximum column index
+       found, ignoring trailing empty cells. See also open_workbook(ragged_rows=?)
+       and Sheet.{@link #Sheet.row_len}(row_index).
+    """
+    
 
-    ##
-    # The map from a column index to a {@link #Colinfo} object. Often there is an entry
-    # in COLINFO records for all column indexes in range(257).
-    # Note that xlrd ignores the entry for the non-existent
-    # 257th column. On the other hand, there may be no entry for unused columns.
-    # <br /> -- New in version 0.6.1. Populated only if open_workbook(formatting_info=True).
     colinfo_map = {}
+    """The map from a column index to a {@link #Colinfo} object. Often there is an entry
+       in COLINFO records for all column indexes in range(257).
+       Note that xlrd ignores the entry for the non-existent
+       257th column. On the other hand, there may be no entry for unused columns.
+    
+    ..versionadded:  0.6.1. Populated only if open_workbook(formatting_info=True).
+    """
+   
 
-    ##
-    # The map from a row index to a {@link #Rowinfo} object. Note that it is possible
-    # to have missing entries -- at least one source of XLS files doesn't
-    # bother writing ROW records.
-    # <br /> -- New in version 0.6.1. Populated only if open_workbook(formatting_info=True).
     rowinfo_map = {}
+    """The map from a row index to a {@link #Rowinfo} object. Note that it is possible
+       to have missing entries -- at least one source of XLS files doesn't
+        bother writing ROW records.
+    
+    ..versionadded:  0.6.1. Populated only if open_workbook(formatting_info=True).
+    """
+    
 
-    ##
-    # List of address ranges of cells containing column labels.
-    # These are set up in Excel by Insert > Name > Labels > Columns.
-    # <br> -- New in version 0.6.0
-    # <br>How to deconstruct the list:
-    # <pre>
-    # for crange in thesheet.col_label_ranges:
-    #     rlo, rhi, clo, chi = crange
-    #     for rx in xrange(rlo, rhi):
-    #         for cx in xrange(clo, chi):
-    #             print "Column label at (rowx=%d, colx=%d) is %r" \
-    #                 (rx, cx, thesheet.cell_value(rx, cx))
-    # </pre>
     col_label_ranges = []
-
-    ##
-    # List of address ranges of cells containing row labels.
-    # For more details, see <i>col_label_ranges</i> above.
-    # <br> -- New in version 0.6.0
+    """List of address ranges of cells containing column labels.
+    
+    These are set up in Excel by Insert > Name > Labels > Columns.
+    
+    How to deconstruct the list:
+    
+    .. code-block:: python
+    
+        for crange in thesheet.col_label_ranges:
+            rlo, rhi, clo, chi = crange
+            for rx in xrange(rlo, rhi):
+                for cx in xrange(clo, chi):
+                    print "Column label at (rowx=%d, colx=%d) is %r" \
+                        (rx, cx, thesheet.cell_value(rx, cx))
+                        
+    ..versionadded::  0.6.0
+    """
+    
     row_label_ranges = []
+    """List of address ranges of cells containing row labels.
+    
+       For more details, see :py:attr:`~xlrd.sheet.Sheet.col_label_ranges`.
+       
+    ..versionadded:: 0.6.0
+    """
+    
 
-    ##
-    # List of address ranges of cells which have been merged.
-    # These are set up in Excel by Format > Cells > Alignment, then ticking
-    # the "Merge cells" box.
-    # <br> -- New in version 0.6.1. Extracted only if open_workbook(formatting_info=True).
-    # <br>How to deconstruct the list:
-    # <pre>
-    # for crange in thesheet.merged_cells:
-    #     rlo, rhi, clo, chi = crange
-    #     for rowx in xrange(rlo, rhi):
-    #         for colx in xrange(clo, chi):
-    #             # cell (rlo, clo) (the top left one) will carry the data
-    #             # and formatting info; the remainder will be recorded as
-    #             # blank cells, but a renderer will apply the formatting info
-    #             # for the top left cell (e.g. border, pattern) to all cells in
-    #             # the range.
-    # </pre>
     merged_cells = []
+    """List of address ranges of cells which have been merged.
     
-    ##
-    # Mapping of (rowx, colx) to list of (offset, font_index) tuples. The offset
-    # defines where in the string the font begins to be used.
-    # Offsets are expected to be in ascending order.
-    # If the first offset is not zero, the meaning is that the cell's XF's font should
-    # be used from offset 0.
-    # <br /> This is a sparse mapping. There is no entry for cells that are not formatted with  
-    # rich text.
-    # <br>How to use:
-    # <pre>
-    # runlist = thesheet.rich_text_runlist_map.get((rowx, colx))
-    # if runlist:
-    #     for offset, font_index in runlist:
-    #         # do work here.
-    #         pass
-    # </pre>
-    # Populated only if open_workbook(formatting_info=True).
-    # <br /> -- New in version 0.7.2.
-    # <br /> &nbsp;
+    These are set up in Excel by Format > Cells > Alignment, then ticking
+    the "Merge cells" box.
+    
+    How to deconstruct the list:
+    .. code-block:: python
+        for crange in thesheet.merged_cells:
+            rlo, rhi, clo, chi = crange
+            for rowx in xrange(rlo, rhi):
+                for colx in xrange(clo, chi):
+                    # cell (rlo, clo) (the top left one) will carry the data
+                    # and formatting info; the remainder will be recorded as
+                    # blank cells, but a renderer will apply the formatting info
+                    # for the top left cell (e.g. border, pattern) to all cells in
+                    # the range.
+    
+    ..versionadded:: 0.6.1. Extracted only if open_workbook(formatting_info=True).
+    """
+    
     rich_text_runlist_map = {}    
-
-    ##
-    # Default column width from DEFCOLWIDTH record, else None.
-    # From the OOo docs:<br />
-    # """Column width in characters, using the width of the zero character
-    # from default font (first FONT record in the file). Excel adds some
-    # extra space to the default width, depending on the default font and
-    # default font size. The algorithm how to exactly calculate the resulting
-    # column width is not known.<br />
-    # Example: The default width of 8 set in this record results in a column
-    # width of 8.43 using Arial font with a size of 10 points."""<br />
-    # For the default hierarchy, refer to the {@link #Colinfo} class.
-    # <br /> -- New in version 0.6.1
-    defcolwidth = None
-
-    ##
-    # Default column width from STANDARDWIDTH record, else None.
-    # From the OOo docs:<br />
-    # """Default width of the columns in 1/256 of the width of the zero
-    # character, using default font (first FONT record in the file)."""<br />
-    # For the default hierarchy, refer to the {@link #Colinfo} class.
-    # <br /> -- New in version 0.6.1
-    standardwidth = None
-
-    ##
-    # Default value to be used for a row if there is
-    # no ROW record for that row.
-    # From the <i>optional</i> DEFAULTROWHEIGHT record.
-    default_row_height = None
-
-    ##
-    # Default value to be used for a row if there is
-    # no ROW record for that row.
-    # From the <i>optional</i> DEFAULTROWHEIGHT record.
-    default_row_height_mismatch = None
-
-    ##
-    # Default value to be used for a row if there is
-    # no ROW record for that row.
-    # From the <i>optional</i> DEFAULTROWHEIGHT record.
-    default_row_hidden = None
-
-    ##
-    # Default value to be used for a row if there is
-    # no ROW record for that row.
-    # From the <i>optional</i> DEFAULTROWHEIGHT record.
-    default_additional_space_above = None
-
-    ##
-    # Default value to be used for a row if there is
-    # no ROW record for that row.
-    # From the <i>optional</i> DEFAULTROWHEIGHT record.
-    default_additional_space_below = None
-
-    ##
-    # Visibility of the sheet. 0 = visible, 1 = hidden (can be unhidden
-    # by user -- Format/Sheet/Unhide), 2 = "very hidden" (can be unhidden
-    # only by VBA macro).
-    visibility = 0
-
-    ##
-    # A 256-element tuple corresponding to the contents of the GCW record for this sheet.
-    # If no such record, treat as all bits zero.
-    # Applies to BIFF4-7 only. See docs of the {@link #Colinfo} class for discussion.
-    gcw = (0, ) * 256
-
-    ##
-    # <p>A list of {@link #Hyperlink} objects corresponding to HLINK records found
-    # in the worksheet.<br />-- New in version 0.7.2 </p>
-    hyperlink_list = []
-
-    ##
-    # <p>A sparse mapping from (rowx, colx) to an item in {@link #Sheet.hyperlink_list}.
-    # Cells not covered by a hyperlink are not mapped.
-    # It is possible using the Excel UI to set up a hyperlink that 
-    # covers a larger-than-1x1 rectangle of cells.
-    # Hyperlink rectangles may overlap (Excel doesn't check).
-    # When a multiply-covered cell is clicked on, the hyperlink that is activated
-    # (and the one that is mapped here) is the last in hyperlink_list.
-    # <br />-- New in version 0.7.2 </p>
-    hyperlink_map = {}
-
-    ##
-    # <p>A sparse mapping from (rowx, colx) to a {@link #Note} object.
-    # Cells not containing a note ("comment") are not mapped.
-    # <br />-- New in version 0.7.2 </p>
-    cell_note_map = {}    
+    """Mapping of (rowx, colx) to list of (offset, font_index) tuples. 
     
-    ##
-    # Number of columns in left pane (frozen panes; for split panes, see comments below in code)
+    * The offset defines where in the string the font begins to be used.
+    * Offsets are expected to be in ascending order.
+    * If the first offset is not zero, the meaning is that the cell's XF's font should
+      be used from offset 0.
+    * This is a sparse mapping. There is no entry for cells that are not formatted with  
+      rich text.
+    
+    How to use:
+    
+    .. code-block:: python
+    
+        runlist = thesheet.rich_text_runlist_map.get((rowx, colx))
+        if runlist:
+            for offset, font_index in runlist:
+                # do work here.
+                pass
+    
+    Populated only if open_workbook(formatting_info=True).
+    
+    ..versionadded:: 0.7.2.
+    """
+    
+
+    defcolwidth = None
+    """Default column width from DEFCOLWIDTH record, else None.
+    
+    From the OOo docs:
+    
+    * *Column width in characters, using the width of the zero character
+      from default font (first FONT record in the file). Excel adds some
+      extra space to the default width, depending on the default font and
+      default font size. The algorithm how to exactly calculate the resulting
+      column width is not known.*
+      
+      *Example: The default width of 8 set in this record results in a column
+      width of 8.43 using Arial font with a size of 10 points.*
+    
+    For the default hierarchy, refer to the :py:class:`~xlrd.sheet.Colinfo` class.
+   
+    ..versionadded:: 0.6.1
+    """
+    
+
+    standardwidth = None
+    """Default column width from STANDARDWIDTH record, else None.
+    
+    From the OOo docs:
+      * *Default width of the columns in 1/256 of the width of the zero
+        character, using default font (first FONT record in the file).*
+        
+    For the default hierarchy, refer to the :py:class:`~xlrd.sheet.Colinfo` class.
+    
+    ..versionadded:: 0.6.1
+    """
+   
+
+    default_row_height = None
+    """Default value to be used for a row if there is no ROW record for that row. 
+       From the *optional* DEFAULTROWHEIGHT record.
+    """
+
+    default_row_height_mismatch = None
+    """Default value to be used for a row if there is no ROW record for that row.
+       From the *optional* DEFAULTROWHEIGHT record.
+    """
+
+    default_row_hidden = None
+    """Default value to be used for a row if there is no ROW record for that row.
+       From the <i>optional</i> DEFAULTROWHEIGHT record.
+    """
+    
+
+    default_additional_space_above = None
+    """Default value to be used for a row if there is no ROW record for that row.
+       From the <i>optional</i> DEFAULTROWHEIGHT record.
+    """
+    
+
+    default_additional_space_below = None
+    """Default value to be used for a row if there is  no ROW record for that row.
+       From the <i>optional</i> DEFAULTROWHEIGHT record.
+    """
+    
+
+    visibility = 0
+    """Visibility of the sheet. 
+    
+    * 0 = visible, 
+    * 1 = hidden (can be unhidden by user -- Format/Sheet/Unhide), 
+    * 2 = "very hidden" (can be unhidden only by VBA macro).
+    """
+
+    gcw = (0, ) * 256
+    """ A 256-element tuple corresponding to the contents of the GCW record for this sheet.
+    
+    * If no such record, treat as all bits zero.
+    * Applies to BIFF4-7 only. See docs of the :py:class:`~xlrd.sheet.Colinfo` class for discussion.
+    """
+
+    hyperlink_list = []
+    """A list of :py:class:`~xlrd.sheet.Hyperlink` objects corresponding 
+       to HLINK records found in the worksheet.
+       
+    ...versionadded::  0.7.2
+    """
+    
+
+    hyperlink_map = {}
+    """A sparse mapping from (rowx, colx) to an item in :py:meth:`~xlrd.sheet.Sheet.hyperlink_list`.
+    
+    * Cells not covered by a hyperlink are not mapped.
+    * It is possible using the Excel UI to set up a hyperlink that 
+      covers a larger-than-1x1 rectangle of cells.
+    * Hyperlink rectangles may overlap (Excel doesn't check).
+    * When a multiply-covered cell is clicked on, the hyperlink that is activated
+      (and the one that is mapped here) is the last in hyperlink_list.
+      
+    ...versionadded:: 0.7.2 
+    """
+
+    cell_note_map = {}
+    """A sparse mapping from (rowx, colx) to a :py:meth:`~xlrd.sheet.Sheet.Note` object.
+       Cells not containing a note ("comment") are not mapped.
+       
+    ...versionadded:: 0.7.2 
+    """
+     
+    
     vert_split_pos = 0
+    """Number of columns in left pane (frozen panes; for split panes, see comments below in code)"""
+    
 
-    ##
-    # Number of rows in top pane (frozen panes; for split panes, see comments below in code)
     horz_split_pos = 0
+    """Number of rows in top pane (frozen panes; for split panes, see comments below in code)"""
+    
 
-    ##
-    # Index of first visible row in bottom frozen/split pane
     horz_split_first_visible = 0
+    """Index of first visible row in bottom frozen/split pane"""
+    
 
-    ##
-    # Index of first visible column in right frozen/split pane
     vert_split_first_visible = 0
+    """Index of first visible column in right frozen/split pane"""
+    
 
-    ##
-    # Frozen panes: ignore it. Split panes: explanation and diagrams in OOo docs.
     split_active_pane = 0
+    """Frozen panes: ignore it. Split panes: explanation and diagrams in OOo docs."""
+    
 
-    ##
-    # Boolean specifying if a PANE record was present, ignore unless you're xlutils.copy
     has_pane_record = 0
+    """Boolean specifying if a PANE record was present, ignore unless you're xlutils.copy"""
+   
 
-    ##
-    # A list of the horizontal page breaks in this sheet.
-    # Breaks are tuples in the form (index of row after break, start col index, end col index).
-    # Populated only if open_workbook(formatting_info=True).
-    # <br /> -- New in version 0.7.2
     horizontal_page_breaks = []
+    """A list of the horizontal page breaks in this sheet.
+    
+    Breaks are tuples in the form (index of row after break, start col index, end col index).
+    Populated only if open_workbook(formatting_info=True).
+    
+    ..versionadded:: 0.7.2
+    """
+    
 
-    ##
-    # A list of the vertical page breaks in this sheet.
-    # Breaks are tuples in the form (index of col after break, start row index, end row index).
-    # Populated only if open_workbook(formatting_info=True).
-    # <br /> -- New in version 0.7.2
     vertical_page_breaks = []
+    """A list of the vertical page breaks in this sheet.
+    
+    Breaks are tuples in the form (index of col after break, start row index, end row index).
+    Populated only if open_workbook(formatting_info=True).
+    
+    ..versionadded:: 0.7.2
+    """
 
 
     def __init__(self, book, position, name, number):
@@ -430,7 +473,7 @@ class Sheet(BaseObject):
     def cell_xf_index(self, rowx, colx):
         """XF index of the cell in the given row and column.
         
-        # This is an index into Book.@link #:py:ref:`xlrd.bookBook.xf_list`.
+        This is an index into :py:attr:`~xlrd.book.Book.xf_list`.
         
         .. versionchanged:: 0.6.1
         """
@@ -458,12 +501,15 @@ class Sheet(BaseObject):
             self._xf_index_stats[3] += 1
             return 15
 
-    ##
-    # Returns the effective number of cells in the given row. For use with
-    # open_workbook(ragged_rows=True) which is likely to produce rows
-    # with fewer than {@link #Sheet.ncols} cells.
-    # <br /> -- New in version 0.7.2
+
     def row_len(self, rowx):
+        """ Returns the effective number of cells in the given row. 
+        
+        For use with open_workbook(ragged_rows=True) which is likely to produce rows
+        with fewer than :py:attr:`xlrd.sheet.Sheet.ncols` cells.
+        
+        .. versionadded:: 0.7.2
+        """
         return len(self._cell_values[rowx])
 
     def row(self, rowx):
@@ -471,7 +517,7 @@ class Sheet(BaseObject):
         
         :param rowx: The row index
         :type rowx: int
-        :rtype: list of :py:class:`xlrd.sheet.Cell` instances
+        :rtype: list of :py:class:`~xlrd.sheet.Cell` instances
         """
         return [
             self.cell(rowx, colx)
@@ -483,23 +529,24 @@ class Sheet(BaseObject):
         
         :param rowx: The row index
         :type rowx: int
-        :rtype: A :py:`list` of :py:class:`xlrd.sheet.Cell` instances
+        :rtype: A :func:`list` of :py:class:`~xlrd.sheet.Cell` instances
         """
         if end_colx is None:
             return self._cell_types[rowx][start_colx:]
         return self._cell_types[rowx][start_colx:end_colx]
 
-    ##
-    # Returns a slice of the values
-    # of the cells in the given row.
+
     def row_values(self, rowx, start_colx=0, end_colx=None):
+        """Returns a slice of the values of the cells in the given row."""
         if end_colx is None:
             return self._cell_values[rowx][start_colx:]
         return self._cell_values[rowx][start_colx:end_colx]
 
-    ##
-    # Returns a slice of the {@link #Cell} objects in the given row.
+    
     def row_slice(self, rowx, start_colx=0, end_colx=None):
+        """Returns a slice of the :py:class:`~xlrd.sheet.Cell` 
+           objects in the given row.
+        """
         nc = len(self._cell_values[rowx])
         if start_colx < 0:
             start_colx += nc
@@ -513,10 +560,11 @@ class Sheet(BaseObject):
             self.cell(rowx, colx)
             for colx in xrange(start_colx, end_colx)
             ]
-
-    ##
-    # Returns a slice of the {@link #Cell} objects in the given column.
+    
     def col_slice(self, colx, start_rowx=0, end_rowx=None):
+        """Returns a slice of the  :py:class:`~xlrd.sheet.Cell` 
+           objects in the given column.
+        """
         nr = self.nrows
         if start_rowx < 0:
             start_rowx += nr
@@ -531,9 +579,8 @@ class Sheet(BaseObject):
             for rowx in xrange(start_rowx, end_rowx)
             ]
 
-    ##
-    # Returns a slice of the values of the cells in the given column.
     def col_values(self, colx, start_rowx=0, end_rowx=None):
+        """Returns a slice of the values of the cells in the given column."""
         nr = self.nrows
         if start_rowx < 0:
             start_rowx += nr
@@ -548,9 +595,8 @@ class Sheet(BaseObject):
             for rowx in xrange(start_rowx, end_rowx)
             ]
 
-    ##
-    # Returns a slice of the types of the cells in the given column.
     def col_types(self, colx, start_rowx=0, end_rowx=None):
+        """Returns a slice of the types of the cells in the given column."""
         nr = self.nrows
         if start_rowx < 0:
             start_rowx += nr
@@ -565,9 +611,9 @@ class Sheet(BaseObject):
             for rowx in xrange(start_rowx, end_rowx)
             ]
 
-    ##
-    # Returns a sequence of the {@link #Cell} objects in the given column.
+       
     def col(self, colx):
+        """Returns a sequence of the :py:class:`~xlrd.sheet.Cell`  objects in the given column."""
         return self.col_slice(colx)
     # Above two lines just for the docs. Here's the real McCoy:
     col = col_slice
@@ -1681,18 +1727,24 @@ class Sheet(BaseObject):
         if not self.formatting_info:
             raise XLRDError("Feature requires open_workbook(..., formatting_info=True)")
 
-    ##
-    # Determine column display width.
-    # <br /> -- New in version 0.6.1
-    # <br />
-    # @param colx Index of the queried column, range 0 to 255.
-    # Note that it is possible to find out the width that will be used to display
-    # columns with no cell information e.g. column IV (colx=255).
-    # @return The column width that will be used for displaying
-    # the given column by Excel, in units of 1/256th of the width of a
-    # standard character (the digit zero in the first font).
+
 
     def computed_column_width(self, colx):
+        """Determine column display width.
+        
+        .. versionadded:  0.6.1
+    
+        .. note::
+        
+            It is possible to find out the width that will be used to display
+            columns with no cell information e.g. column IV (colx=255).
+            
+        :param colx: Index of the queried column, range 0 to 255.
+        :type colx: int
+        :return:  The column width that will be used for displaying
+                 the given column by Excel, in units of 1/256th of the width of a
+                 standard character (the digit zero in the first font).
+        """
         self.req_fmt_info()
         if self.biff_version >= 80:
             colinfo = self.colinfo_map.get(colx, None)
@@ -2093,11 +2145,7 @@ class MSObj(BaseObject):
 class MSTxo(BaseObject):
     pass
 
-##    
-# <p> Represents a user "comment" or "note".
-# Note objects are accessible through Sheet.{@link #Sheet.cell_note_map}.
-# <br />-- New in version 
-# </p>
+
 class Note(BaseObject):
     """Represents a user "comment" or "note".
     
@@ -2135,53 +2183,61 @@ class Note(BaseObject):
     .. attribute text:: Text of the note
     """
 
-##
-# <p>Contains the attributes of a hyperlink.
-# Hyperlink objects are accessible through Sheet.{@link #Sheet.hyperlink_list}
-# and Sheet.{@link #Sheet.hyperlink_map}.
-# <br />-- New in version 0.7.2
-# </p>   
+
 class Hyperlink(BaseObject):
-    ##
-    # Index of first row
+    """Contains the attributes of a hyperlink.
+    
+    Hyperlink objects are accessible through :py:meth:~xlrd.sheet.Sheet.hyperlink_list`
+    and :py:meth:~xlrd.sheet.Sheet.hyperlink_map`.
+    
+    .. versionadded:: 0.7.2
+    """
+
     frowx = None
-    ##
-    # Index of last row
+    """Index of first row"""
+    
     lrowx = None
-    ##
-    # Index of first column
+    """Index of last row"""
+    
     fcolx = None
-    ##
-    # Index of last column
+    """Index of first column"""
+    
     lcolx = None
-    ##
-    # Type of hyperlink. Unicode string, one of 'url', 'unc',
-    # 'local file', 'workbook', 'unknown'
+    """Index of last column"""
+    
     type = None
-    ##
-    # The URL or file-path, depending in the type. Unicode string, except 
-    # in the rare case of a local but non-existent file with non-ASCII
-    # characters in the name, in which case only the "8.3" filename is available,
-    # as a bytes (3.x) or str (2.x) string, <i>with unknown encoding.</i>
+    """Type of hyperlink. Unicode string, one 
+       of 'url', 'unc', 'local file', 'workbook', 'unknown'
+    """
+   
     url_or_path = None
-    ##
-    # Description ... this is displayed in the cell,
-    # and should be identical to the cell value. Unicode string, or None. It seems
-    # impossible NOT to have a description created by the Excel UI.
+    """ The URL or file-path, depending in the type. Unicode string, except 
+        in the rare case of a local but non-existent file with non-ASCII
+        characters in the name, in which case only the "8.3" filename is available,
+        as a bytes (3.x) or str (2.x) string, *with unknown encoding.*
+    """
+    
     desc = None
-    ##
-    # Target frame. Unicode string. Note: I have not seen a case of this.
-    # It seems impossible to create one in the Excel UI.
+    """Description ... this is displayed in the cell,
+       and should be identical to the cell value. Unicode string, or None. It seems
+       impossible NOT to have a description created by the Excel UI.
+    """
+   
     target = None
-    ##
-    # "Textmark": the piece after the "#" in 
-    # "http://docs.python.org/library#struct_module", or the Sheet1!A1:Z99
-    # part when type is "workbook".
+    """Target frame. Unicode string. Note: I have not seen a case of this.
+       It seems impossible to create one in the Excel UI.
+    """
+    
     textmark = None
-    ##
-    # The text of the "quick tip" displayed when the cursor
-    # hovers over the hyperlink.
+    """"Textmark": the piece after the "#" in 
+        "http://docs.python.org/library#struct_module", or the Sheet1!A1:Z99
+        part when type is "workbook".
+    """
+    
     quicktip = None
+    """The text of the "quick tip" displayed when the cursor hovers over the hyperlink."""
+     
+    
 
 # === helpers ===
 
@@ -2249,7 +2305,7 @@ class Cell(BaseObject):
     +--------------------+----+-----------------------------------------------------------------+
     |XL_CELL_TEXT        |1   |a :func:`unicode` string                                         |
     +--------------------+----+-----------------------------------------------------------------+
-    |XL_CELL_NUMBER      |2   |:func:`float                                                     |
+    |XL_CELL_NUMBER      |2   |:func:`float`                                                     |
     +--------------------+----+-----------------------------------------------------------------+
     |XL_CELL_DATE        |3   |:func:`float`                                                    |
     +--------------------+----+-----------------------------------------------------------------+
@@ -2349,41 +2405,47 @@ _USE_SLOTS = 1
 
 
 class Rowinfo(BaseObject):
-    """Height and default formatting information that applies to a row in a sheet.
+    """Height and default formatting information that applies to a row in a 
+       sheet. Derived from ROW records.
     
+    * :py:attr:`~xlrd.sheet.Rowinfo.height`: Height of the row, in twips. One twip == 1/20 of a point.
     
-    Derived from ROW records.
+    * :py:attr:`~xlrd.sheet.Rowinfo.has_default_height`: 
+    
+      * 0 = Row has custom height 
+      * 1 = Row has default height
+    
+    * :py:attr:`~xlrd.sheet.Rowinfo.outline_level`: Outline level of the row (0 to 7)
+    
+    * :py:attr:`~xlrd.sheet.Rowinfo.outline_group_starts_ends`: 
+      1 = Outline group starts or ends here  (depending on where the outline buttons are 
+      located, see WSBOOL record [TODO ??]), *and* is collapsed.
+      
+    * :py:attr:`~xlrd.sheet.Rowinfo.hidden`: 1 = Row is hidden (manually, or by a filter or outline group)
+    
+    * :py:attr:`~xlrd.sheet.Rowinfo.height_mismatch`: 1 = Row height and default font height do not match
+    
+    * :py:attr:`~xlrd.sheet.Rowinfo.has_default_xf_index`: 
+    
+      * 1 = the xf_index attribute is usable
+      * 0 = ignore it
+    
+    * :py:attr:`~xlrd.sheet.Rowinfo.xf_index`: Index to default XF record for empty cells in this row.
+                Don't use this if has_default_xf_index == 0. 
+                
+    * :py:attr:`~xlrd.sheet.Rowinfo.additional_space_above`: This flag is set, if the 
+      upper border  of at least one cell in this row
+      or if the lower border of at least one cell in the row above is
+      formatted with a thick line style. Thin and medium line styles are not
+      taken into account.
+    
+    * :py:attr:`~xlrd.sheet.Rowinfo.additional_space_below`: This flag is set, 
+      if the lower border of at least one cell in this row
+      or if the upper border of at least one cell in the row below is
+      formatted with a medium or thick line style. Thin line styles are not
+      taken into account. 
+      
     .. versionadded:: 0.6.1
-    
-    :py:attr:sheet.RowInfo.height`: Height of the row, in twips. One twip == 1/20 of a point.
-    
-    #
-    # <p><b>has_default_height</b>: 0 = Row has custom height; 1 = Row has default height.</p>
-    #
-    # <p><b>outline_level</b>: Outline level of the row (0 to 7) </p>
-    #
-    # <p><b>outline_group_starts_ends</b>: 1 = Outline group starts or ends here (depending on where the
-    # outline buttons are located, see WSBOOL record [TODO ??]),
-    # <i>and</i> is collapsed </p>
-    #
-    # <p><b>hidden</b>: 1 = Row is hidden (manually, or by a filter or outline group) </p>
-    #
-    # <p><b>height_mismatch</b>: 1 = Row height and default font height do not match </p>
-    #
-    # <p><b>has_default_xf_index</b>: 1 = the xf_index attribute is usable; 0 = ignore it </p>
-    #
-    # <p><b>xf_index</b>: Index to default XF record for empty cells in this row.
-    # Don't use this if has_default_xf_index == 0. </p>
-    #
-    # <p><b>additional_space_above</b>: This flag is set, if the upper border of at least one cell in this row
-    # or if the lower border of at least one cell in the row above is
-    # formatted with a thick line style. Thin and medium line styles are not
-    # taken into account. </p>
-    #
-    # <p><b>additional_space_below</b>: This flag is set, if the lower border of at least one cell in this row
-    # or if the upper border of at least one cell in the row below is
-    # formatted with a medium or thick line style. Thin line styles are not
-    # taken into account. </p>
     """
     if _USE_SLOTS:
         __slots__ = (

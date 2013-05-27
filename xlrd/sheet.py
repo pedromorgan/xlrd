@@ -2346,42 +2346,45 @@ class Colinfo(BaseObject):
 
 _USE_SLOTS = 1
 
-##
-# <p>Height and default formatting information that applies to a row in a sheet.
-# Derived from ROW records.
-# <br /> -- New in version 0.6.1</p>
-#
-# <p><b>height</b>: Height of the row, in twips. One twip == 1/20 of a point.</p>
-#
-# <p><b>has_default_height</b>: 0 = Row has custom height; 1 = Row has default height.</p>
-#
-# <p><b>outline_level</b>: Outline level of the row (0 to 7) </p>
-#
-# <p><b>outline_group_starts_ends</b>: 1 = Outline group starts or ends here (depending on where the
-# outline buttons are located, see WSBOOL record [TODO ??]),
-# <i>and</i> is collapsed </p>
-#
-# <p><b>hidden</b>: 1 = Row is hidden (manually, or by a filter or outline group) </p>
-#
-# <p><b>height_mismatch</b>: 1 = Row height and default font height do not match </p>
-#
-# <p><b>has_default_xf_index</b>: 1 = the xf_index attribute is usable; 0 = ignore it </p>
-#
-# <p><b>xf_index</b>: Index to default XF record for empty cells in this row.
-# Don't use this if has_default_xf_index == 0. </p>
-#
-# <p><b>additional_space_above</b>: This flag is set, if the upper border of at least one cell in this row
-# or if the lower border of at least one cell in the row above is
-# formatted with a thick line style. Thin and medium line styles are not
-# taken into account. </p>
-#
-# <p><b>additional_space_below</b>: This flag is set, if the lower border of at least one cell in this row
-# or if the upper border of at least one cell in the row below is
-# formatted with a medium or thick line style. Thin line styles are not
-# taken into account. </p>
+
 
 class Rowinfo(BaseObject):
-
+    """Height and default formatting information that applies to a row in a sheet.
+    
+    
+    Derived from ROW records.
+    .. versionadded:: 0.6.1
+    
+    :py:attr:sheet.RowInfo.height`: Height of the row, in twips. One twip == 1/20 of a point.
+    
+    #
+    # <p><b>has_default_height</b>: 0 = Row has custom height; 1 = Row has default height.</p>
+    #
+    # <p><b>outline_level</b>: Outline level of the row (0 to 7) </p>
+    #
+    # <p><b>outline_group_starts_ends</b>: 1 = Outline group starts or ends here (depending on where the
+    # outline buttons are located, see WSBOOL record [TODO ??]),
+    # <i>and</i> is collapsed </p>
+    #
+    # <p><b>hidden</b>: 1 = Row is hidden (manually, or by a filter or outline group) </p>
+    #
+    # <p><b>height_mismatch</b>: 1 = Row height and default font height do not match </p>
+    #
+    # <p><b>has_default_xf_index</b>: 1 = the xf_index attribute is usable; 0 = ignore it </p>
+    #
+    # <p><b>xf_index</b>: Index to default XF record for empty cells in this row.
+    # Don't use this if has_default_xf_index == 0. </p>
+    #
+    # <p><b>additional_space_above</b>: This flag is set, if the upper border of at least one cell in this row
+    # or if the lower border of at least one cell in the row above is
+    # formatted with a thick line style. Thin and medium line styles are not
+    # taken into account. </p>
+    #
+    # <p><b>additional_space_below</b>: This flag is set, if the lower border of at least one cell in this row
+    # or if the upper border of at least one cell in the row below is
+    # formatted with a medium or thick line style. Thin line styles are not
+    # taken into account. </p>
+    """
     if _USE_SLOTS:
         __slots__ = (
             "height",

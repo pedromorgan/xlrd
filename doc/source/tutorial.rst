@@ -497,18 +497,20 @@ In the examples directory of the ``xlrd`` distribution you will find ``namesdemo
 Formatting
 ----------
 
-We've already seen that ``open_workbook`` has a parameter to load formatting information from Excel files. When this is done, all the formatting information is available, but the details of how it is presented are beyond the scope of this tutorial.
+We've already seen that :py:func:`~xlrd.open_workbook` has a parameter to load formatting information 
+from Excel files. When this is done, all the formatting information is available, 
+but the details of how it is presented are beyond the scope of this tutorial.
 
-If you wish to copy existing formatted data to a new Excel file, see ``xlutils.copy`` and ``xlutils.filter``.
+If you wish to copy existing formatted data to a new Excel file, see 
+:py:func:`xlutils.copy` and :py:func:`xlutils.filter`.
 
 If you do wish to inspect formatting information, you'll need to consult the following attributes of the following classes:
 
 xlrd.Book
 ~~~~~~~~~
 
-``colour_map``
-
-``font_list``
+* :py:attr:`colour_map`
+* :py:attr:`font_list`
 
 ``format_list``
 

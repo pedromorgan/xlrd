@@ -1,6 +1,9 @@
 ====================================================
-:mod:`formatting`: Extended Formatting (XF) handling
+:mod:`xlrd.formatting`: Extended Formatting (XF) handling
 ====================================================
 
 .. automodule:: xlrd.formatting
-   :members:
+    :members:
+    :undoc-members:
+    :show-inheritance:
+    :inherited-members:

@@ -1,9 +1,9 @@
 ===========================================================
-:mod:`xlrd.biffh`: Binary Interchange File Format (BIFF) Handler
+:mod:`xlrd.timemachine`: 
 ===========================================================
 
-    
-.. automodule:: xlrd.biffh
+.. automodule:: xlrd.timemachine
     :members:
     :undoc-members:
     :show-inheritance:
+    :inherited-members:

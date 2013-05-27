@@ -1,4 +1,4 @@
-Quick Start
+Developers Guide
 ====================================
 
 All the examples shown below can be found in the ``xlrd`` directory of the course material.
@@ -6,7 +6,7 @@ All the examples shown below can be found in the ``xlrd`` directory of the cours
 Opening Excel Files 
 -------------------------------------
 
-Workbooks can be loaded either from a :py:func:`file`, an `mmap.mmap` object or from a string:
+Workbooks can be loaded either from a :py:func:`file`, an :py:class:`~mmap.mmap` object or from a string:
 
 ::
 
@@ -22,7 +22,6 @@ Workbooks can be loaded either from a :py:func:`file`, an `mmap.mmap` object or 
 
   aString = open('simple.xls','rb').read()
   print open_workbook(file_contents=aString)
-  open.py
 
 Navigating a Workbook
 ---------------------
@@ -43,7 +42,6 @@ Here is a simple example of workbook navigation:
               values.append(s.cell(row,col).value)
           print ','.join(values)
       print
-  simple.py
 
 The next few sections will cover the navigation of workbooks in more detail.
 
@@ -89,8 +87,6 @@ of the workbook that are only rarely useful:
 * :py:class:`~xlrd.book.Book.codepage`
 * :py:class:`~xlrd.book.Book.countries`
 * :py:class:`~xlrd.book.Book.user_name`
-
-If you think you may need to use these attributes, please see the ``xlrd`` documentation.
 
 Introspecting a Sheet
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -224,11 +220,11 @@ the Excel cell references that users may be used to seeing.
 
 The following functions are provided to help with this:
 
-*   The :py:meth:`~xlrd.sheet.Sheet.cellname` function turns a row and column index into 
+*   The :py:func:`~xlrd.formula.cellname` function turns a row and column index into 
     a relative Excel cell reference.
-*   The :py:meth:`~xlrd.cellnameabs` function turns a row and column 
+*   The :py:func:`~xlrd.formula.cellnameabs` function turns a row and column 
     index into an absolute Excel cell reference.
-*   The :py:meth:`~xlrd.colname` function turns a column index into an Excel column name.
+*   The :py:func:`~xlrd.formula.colname` function turns a column index into an Excel column name.
 
 These three functions are demonstrated in the following example:
 
@@ -338,7 +334,7 @@ Error
 
 *   These are represented by the :py:data:`xlrd.XL_CELL_ERROR` constant.
 *   Cells of this type will have values that are integers representing specific error codes.
-*   The ``error_text_from_code`` dictionary can be used to turn error codes into error messages:
+*   The :py:attr:`error_text_from_code` dictionary can be used to turn error codes into error messages:
 
 ::
 
@@ -349,18 +345,23 @@ Error
   
   print error_text_from_code[sheet.cell(5,2).value]
   print error_text_from_code[sheet.cell(5,3).value]
-  # errors.py
+
 
 For a simpler way of sensibly displaying all cell types, see :py:func:`xlutils.display`.
 
 Empty / Blank
 ~~~~~~~~~~~~~
 
-Excel files only store cells that either have information in them or have formatting applied to them. However, ``xlrd`` presents sheets as rectangular grids of cells.
+Excel files only store cells that either have information in them or have formatting 
+applied to them. However, :py:mod:`xlrd` presents sheets as rectangular grids of cells.
 
-Cells where no information is present in the Excel file are represented by the ``xlrd.XL_CELL_EMPTY`` constant. In addition, there is only one “empty cell”, whose value is an empty string, used by ``xlrd``, so empty cells may be checked using a Python identity check.
+Cells where no information is present in the Excel file are represented by 
+the :py:data:`xlrd.XL_CELL_EMPTY` constant. In addition, there is only 
+one “empty cell”, whose value is an empty string, used by :py:mod:`xlrd`, so empty cells 
+may be checked using a Python identity check.
 
-Cells where only formatting information is present in the Excel file are represented by the ``xlrd.XL_CELL_BLANK`` constant and their value will always be an empty string.
+Cells where only formatting information is present in the Excel file are 
+represented by the :py:attr:`xlrd.XL_CELL_BLANK` constant and their value will always be an empty string.
 
 ::
 
@@ -381,7 +382,7 @@ Cells where only formatting information is present in the Excel file are represe
   print empty.ctype,repr(empty.value)
   print blank.ctype,repr(blank.value)
   
-  emptyblank.py
+  #emptyblank.py
 
 The following example brings all of the above cell types together and shows examples of their use:
 
@@ -426,9 +427,12 @@ Names
 
 These are an infrequently used but powerful way of abstracting commonly used information found within Excel files.
 
-They have many uses, and ``xlrd`` can extract information from many of them. A notable exception are names that refer to sheet and VBA macros, which are extracted but should be ignored.
+They have many uses, and :py:mod:`xlrd` can extract information from many of them. A 
+notable exception are names that refer to sheet and VBA macros, which are extracted but should be ignored.
 
-Names are created in Excel by navigating to ``Insert > Name > Define``. If you plan to use ``xlrd`` to extract information from Names, familiarity with the definition and use of names in your chosen spreadsheet application is a good idea.
+Names are created in Excel by navigating to ``Insert > Name > Define``. If you plan 
+to use :py:mod:`xlrd` to extract information from Names, familiarity with the definition 
+and use of names in your chosen spreadsheet application is a good idea.
 
 Types
 ~~~~~
@@ -459,12 +463,15 @@ The coordinates of an absolute reference can be extracted so that you can then e
 
 A relative reference is useful only if you have external knowledge of what cells can be used as the origin. Many formulas found in Excel files include function calls and multiple references and are not useful, and can be too hard to evaluate.
 
-A full calculation engine is not included in ``xlrd``.
+A full calculation engine is not included in :py:mod:`xlrd`.
 
 Scope
 ~~~~~
 
-The scope of a Name can be global, or it may be specific to a particular sheet. A Name's identifier may be re-used in different scopes. When there are multiple Names with the same identifier, the most appropriate one is used based on scope. A good example of this is the built-in name ``Print_Area``; each worksheet may have one of these.
+The scope of a Name can be global, or it may be specific to a particular sheet. A Name's 
+identifier may be re-used in different scopes. When there are multiple Names with 
+the same identifier, the most appropriate one is used based on scope. A good example 
+of this is the built-in name ``Print_Area``; each worksheet may have one of these.
 
 Examples:
 
@@ -506,78 +513,44 @@ If you wish to copy existing formatted data to a new Excel file, see
 
 If you do wish to inspect formatting information, you'll need to consult the following attributes of the following classes:
 
-xlrd.Book
-~~~~~~~~~
+* :py:class:`xlrd.book.Book`
+    * :py:attr:`~xlrd.book.Book.colour_map`
+    * :py:attr:`~xlrd.book.Book.font_list`
+    * :py:attr:`~xlrd.book.Book.format_list`
+    * :py:attr:`~xlrd.book.Book.format_map`
+    * :py:attr:`~xlrd.book.Book.palette_record`
+    * :py:attr:`~xlrd.book.Book.style_name_map`
+    * :py:attr:`~xlrd.book.Book.xf_list`
 
-* :py:attr:`colour_map`
-* :py:attr:`font_list`
+* :py:class:`xlrd.sheet.Sheet`
+    * :py:attr:`~xlrd.sheet.Sheet.cell_xf_index`
+    * :py:attr:`~xlrd.sheet.Sheet.rowinfo_map`
+    * :py:attr:`~xlrd.sheet.Sheet.colinfo_map`
+    * :py:attr:`~xlrd.sheet.Sheet.computed_column_width`
+    * :py:attr:`~xlrd.sheet.Sheet.default_additional_space_above`
+    * :py:attr:`~xlrd.sheet.Sheet.default_additional_space_below`
+    * :py:attr:`~xlrd.sheet.Sheet.default_row_height`
+    * :py:attr:`~xlrd.sheet.Sheet.default_row_height_mismatch`
+    * :py:attr:`~xlrd.sheet.Sheet.default_row_hidden`
+    * :py:attr:`~xlrd.sheet.Sheet.defcolwidth`
+    * :py:attr:`~xlrd.sheet.Sheet.gcw`
+    * :py:attr:`~xlrd.sheet.Sheet.merged_cells`
+    * :py:attr:`~xlrd.sheet.Sheet.standardwidth`
 
-``format_list``
+* :py:class:`xlrd.sheet.Cell`
+    * :py:attr:`~xlrd.sheet.Cell.xf_index`
 
-``format_map``
+In addition, the following classes are used solely to represent formatting information:
 
-``palette_record``
-
-``style_name_map``
-
-``xf_list``
-
-xlrd.sheet.Sheet
-~~~~~~~~~~~~~~~~
-
-``cell_xf_index``
-
-``rowinfo_map``
-
-``colinfo_map``
-
-``computed_column_width``
-
-``default_additional_space_above``
-
-``default_additional_space_below``
-
-``default_row_height``
-
-``default_row_height_mismatch``
-
-``default_row_hidden``
-
-``defcolwidth``
-
-``gcw``
-
-``merged_cells``
-
-``standard_width``
-
-xlrd.sheet.Cell
-~~~~~~~~~~~~~~~
-
-``xf_index``
-
-Other Classes
-~~~~~~~~~~~~~
-
-In addition, the following classes are solely used to represent formatting information:
-
-``xlrd.sheet.Rowinfo``
-
-``xlrd.sheet.Colinfo``
-
-``xlrd.formatting.Font``
-
-``xlrd.formatting.Format``
-
-``xlrd.formatting.XF``
-
-``xlrd.formatting.XFAlignment``
-
-``xlrd.formatting.XFBackground``
-
-``xlrd.formatting.XFBorder``
-
-``xlrd.formatting.XFProtection``
+* :py:class:`xlrd.sheet.Rowinfo`
+* :py:class:`xlrd.sheet.Colinfo`
+* :py:class:`xlrd.formatting.Font`
+* :py:class:`xlrd.formatting.Format`
+* :py:class:`xlrd.formatting.XF`
+* :py:class:`xlrd.formatting.XFAlignment`
+* :py:class:`xlrd.formatting.XFBackground`
+* :py:class:`xlrd.formatting.XFBorder`
+* :py:class:`xlrd.formatting.XFProtection`
 
 Working with large Excel files
 ------------------------------

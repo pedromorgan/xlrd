@@ -588,20 +588,23 @@ class FormulaError(Exception):
 #<p></p>
 
 class Operand(object):
-
-    ##
-    # None means that the actual value of the operand is a variable
-    # (depends on cell data), not a constant.
+    """Operand"""
+    
     value = None
-    ##
-    # oUNK means that the kind of operand is not known unambiguously.
+    """None means that the actual value of the operand is a variable
+       (depends on cell data), not a constant.
+    """
+    
+    
     kind = oUNK
-    ##
-    # The reconstituted text of the original formula. Function names will be
-    # in English irrespective of the original language, which doesn't seem
-    # to be recorded anywhere. The separator is ",", not ";" or whatever else
-    # might be more appropriate for the end-user's locale; patches welcome.
+    """oUNK means that the kind of operand is not known unambiguously."""
+    
     text = '?'
+    """The reconstituted text of the original formula. Function names will be
+       in English irrespective of the original language, which doesn't seem
+       to be recorded anywhere. The separator is ",", not ";" or whatever else
+       might be more appropriate for the end-user's locale; patches welcome.
+    """
 
     def __init__(self, akind=None, avalue=None, arank=0, atext='?'):
         if akind is not None:
@@ -2064,15 +2067,30 @@ def colnamerel(colx, colxrel, bcolx=None, r1c1=0):
         return "C"
     return colname((bcolx + colx) % 256)
 
-##
-# Utility function: (5, 7) => 'H6'
+
+
 def cellname(rowx, colx):
-    """ (5, 7) => 'H6' """
+    """Coverts row/col into cellname eg (5, 7) => 'H6'  
+    
+    :param rowx: the row
+    :type rowx: int
+    :param colx: the col
+    :type colx: int
+    :rtype: :func:`str` with cellname
+    """
     return "%s%d" % (colname(colx), rowx+1)
 
-##
-# Utility function: (5, 7) => '$H$6'
 def cellnameabs(rowx, colx, r1c1=0):
+    """Coverts row/col into absoulute cellname eg (5, 7) => '$H$6' or 'R8C6' 
+    
+    :param rowx: the row
+    :type rowx: int
+    :param colx: the col
+    :type colx: int
+    :param r1c1: 
+    :type r1c1: int
+    :rtype: :func:`str` with cellname
+    """
     """ (5, 7) => '$H$6' or 'R8C6'"""
     if r1c1:
         return "R%dC%d" % (rowx+1, colx+1)
@@ -2090,10 +2108,14 @@ def cellnamerel(rowx, colx, rowxrel, colxrel, browx=None, bcolx=None, r1c1=0):
         return r + c
     return c + r
 
-##
-# Utility function: 7 => 'H', 27 => 'AB'
+
 def colname(colx):
-    """ 7 => 'H', 27 => 'AB' """
+    """Converts col name from index eg 7 => 'H', 27 => 'AB'
+    
+    :param colx: the col
+    :type colx: int
+    :rtype: :func:`str` with colname
+    """
     alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
     if colx <= 25:
         return alphabet[colx]

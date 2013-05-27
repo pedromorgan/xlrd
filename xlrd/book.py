@@ -177,68 +177,70 @@ class Name(BaseObject):
         Excel 5.0 (:py:attr:`xlrd.book.Book.biff_version` < 50)
     """
     _repr_these = ['stack']
+    
     book = None # parent
 
-    ##
-    # 0 = Visible; 1 = Hidden
     hidden = 0
-
-    ##
-    # 0 = Command macro; 1 = Function macro. Relevant only if macro == 1
+    """0 = Visible; 1 = Hidden"""
+   
     func = 0
-
-    ##
-    # 0 = Sheet macro; 1 = VisualBasic macro. Relevant only if macro == 1
+    """0 = Command macro; 1 = Function macro. Relevant only if macro == 1"""
+    
     vbasic = 0
+    """0 = Sheet macro; 1 = VisualBasic macro. Relevant only if macro == 1"""
+    
 
-    ##
-    # 0 = Standard name; 1 = Macro name
     macro = 0
+    """0 = Standard name; 1 = Macro name"""
+    
 
-    ##
-    # 0 = Simple formula; 1 = Complex formula (array formula or user defined)<br />
-    # <i>No examples have been sighted.</i>
     complex = 0
+    """0 = Simple formula; 1 = Complex formula (array formula or user defined)
+    
+    *No examples have been sighted.*
+    """
+    
 
-    ##
-    # 0 = User-defined name; 1 = Built-in name
-    # (common examples: Print_Area, Print_Titles; see OOo docs for full list)
     builtin = 0
-
-
+    """0 = User-defined name; 1 = Built-in name
+       (common examples: Print_Area, Print_Titles; see OOo docs for full list)
+    """
+    
     funcgroup = 0
     """Function group. Relevant only if macro == 1; see OOo docs for values."""
 
-    ##
-    # 0 = Formula definition; 1 = Binary data<br />  <i>No examples have been sighted.</i>
     binary = 0
+    """0 = Formula definition; 1 = Binary data *(No examples have been sighted)*"""
+    
 
-    ##
-    # The index of this object in book.name_obj_list
     name_index = 0
+    """The index of this object in :py:attr:`~xlrd.book.Book.name_obj_list"""
+    
 
-    ##
-    # A Unicode string. If builtin, decoded as per OOo docs.
     name = UNICODE_LITERAL("")
+    """A Unicode string. If builtin, decoded as per OOo docs."""
+    
 
-    ##
-    # An 8-bit string.
     raw_formula = b''
+    """An 8-bit string."""
+    
 
-    ##
-    # -1: The name is global (visible in all calculation sheets).<br />
-    # -2: The name belongs to a macro sheet or VBA sheet.<br />
-    # -3: The name is invalid.<br />
-    # 0 <= scope < book.nsheets: The name is local to the sheet whose index is scope.
     scope = -1
+    """
+      * -1: The name is global (visible in all calculation sheets).<br />
+      * -2: The name belongs to a macro sheet or VBA sheet.<br />
+      * -3: The name is invalid.<br />
+      * 0 <= scope < book.nsheets: The name is local to the sheet whose index is scope.
+    """
 
-    ##
-    # The result of evaluating the formula, if any.
-    # If no formula, or evaluation of the formula encountered problems,
-    # the result is None. Otherwise the result is a single instance of the
-    # Operand class.
-    #
     result = None
+    """ The result of evaluating the formula, if any.
+    
+    If no formula, or evaluation of the formula encountered problems,
+    the result is None. Otherwise the result is a single instance of the
+    :py:class:`xlrd.formula.Operand` class.
+    """
+    
 
     def cell(self):
         """A convenience method for the frequent use case where the name
@@ -313,113 +315,132 @@ class Book(BaseObject):
         was returned when you called :py:func:`xlrd.open_workbook`.
     """
     
-    ##
-    # The number of worksheets present in the workbook file.
-    # This information is available even when no sheets have yet been loaded.
     nsheets = 0
+    """The number of worksheets present in the workbook file.
+       This information is available even when no sheets have yet been loaded.
+    """
+   
 
-    ##
-    # Which date system was in force when this file was last saved.<br />
-    #    0 => 1900 system (the Excel for Windows default).<br />
-    #    1 => 1904 system (the Excel for Macintosh default).<br />
     datemode = 0 # In case it's not specified in the file.
+    """Which date system was in force when this file was last saved.
+     
+      * 0 => 1900 system (the Excel for Windows default).<br />
+      * 1 => 1904 system (the Excel for Macintosh default).<br />
+    """
 
-    ##
-    # Version of BIFF (Binary Interchange File Format) used to create the file.
-    # Latest is 8.0 (represented here as 80), introduced with Excel 97.
-    # Earliest supported by this module: 2.0 (represented as 20).
     biff_version = 0
+    """Version of BIFF (Binary Interchange File Format) used to create the file.
+    
+    Latest is 8.0 (represented here as 80), introduced with Excel 97.
+    Earliest supported by this module: 2.0 (represented as 20).
+    """
 
-    ##
-    # List containing a Name object for each NAME record in the workbook.
-    # <br />  -- New in version 0.6.0
     name_obj_list = []
+    """List containing a Name object for each NAME record in the workbook.
+    
+    .. verionadded:: 0.6.0
+    """
 
-    ##
-    # An integer denoting the character set used for strings in this file.
-    # For BIFF 8 and later, this will be 1200, meaning Unicode; more precisely, UTF_16_LE.
-    # For earlier versions, this is used to derive the appropriate Python encoding
-    # to be used to convert to Unicode.
-    # Examples: 1252 -> 'cp1252', 10000 -> 'mac_roman'
     codepage = None
+    """An integer denoting the character set used for strings in this file.
+    
+    * For BIFF 8 and later, this will be 1200, meaning Unicode; more precisely, UTF_16_LE.
+    * For earlier versions, this is used to derive the appropriate Python encoding
+      to be used to convert to Unicode.
+    * Examples: 1252 -> 'cp1252', 10000 -> 'mac_roman'
+    """
 
-    ##
-    # The encoding that was derived from the codepage.
     encoding = None
+    """The encoding that was derived from the codepage."""
+    
 
-    ##
-    # A tuple containing the (telephone system) country code for:<br />
-    #    [0]: the user-interface setting when the file was created.<br />
-    #    [1]: the regional settings.<br />
-    # Example: (1, 61) meaning (USA, Australia).
-    # This information may give a clue to the correct encoding for an unknown codepage.
-    # For a long list of observed values, refer to the OpenOffice.org documentation for
-    # the COUNTRY record.
     countries = (0, 0)
+    """A tuple containing the (telephone system) country code for:
+        * [0]: the user-interface setting when the file was created.<br />
+        * [1]: the regional settings.<br />
+        * Example: (1, 61) meaning (USA, Australia).
+    This information may give a clue to the correct encoding for an unknown codepage.
+    For a long list of observed values, refer to the OpenOffice.org documentation for
+    the COUNTRY record.
+    """
 
-    ##
-    # What (if anything) is recorded as the name of the last user to save the file.
     user_name = UNICODE_LITERAL('')
+    """What (if anything) is recorded as the name of the last user to save the file."""
+    
 
-    ##
-    # A list of Font class instances, each corresponding to a FONT record.
-    # <br /> -- New in version 0.6.1
     font_list = []
+    """A list of Font class instances, each corresponding to a FONT record.
+    
+    .. verionadded:: 0.6.1
+    """
 
-    ##
-    # A list of XF class instances, each corresponding to an XF record.
-    # <br /> -- New in version 0.6.1
     xf_list = []
+    """A list of :py:class:`~xlrd.formatting.XF` class instances, each corresponding to an XF record.
+    
+    .. verionadded:: 0.6.1
+    """
 
-    ##
-    # A list of Format objects, each corresponding to a FORMAT record, in
-    # the order that they appear in the input file.
-    # It does <i>not</i> contain builtin formats.
-    # If you are creating an output file using (for example) pyExcelerator,
-    # use this list.
-    # The collection to be used for all visual rendering purposes is format_map.
-    # <br /> -- New in version 0.6.1
     format_list = []
+    """A list of Format objects, each corresponding to a FORMAT record, in
+       the order that they appear in the input file.
+       
+    * It does *not* contain builtin formats.
+    * If you are creating an output file using (for example) pyExcelerator, use this list.
+    * The collection to be used for all visual rendering purposes is format_map.
+    
+    .. verionadded:: 0.6.1
+    """
 
-    ##
-    # The mapping from XF.format_key to Format object.
-    # <br /> -- New in version 0.6.1
     format_map = {}
+    """The mapping from XF.format_key to Format object.
+    .. verionadded:: 0.6.1
+    """
+   
 
-    ##
-    # This provides access via name to the extended format information for
-    # both built-in styles and user-defined styles.<br />
-    # It maps <i>name</i> to (<i>built_in</i>, <i>xf_index</i>), where:<br />
-    # <i>name</i> is either the name of a user-defined style,
-    # or the name of one of the built-in styles. Known built-in names are
-    # Normal, RowLevel_1 to RowLevel_7,
-    # ColLevel_1 to ColLevel_7, Comma, Currency, Percent, "Comma [0]",
-    # "Currency [0]", Hyperlink, and "Followed Hyperlink".<br />
-    # <i>built_in</i> 1 = built-in style, 0 = user-defined<br />
-    # <i>xf_index</i> is an index into Book.xf_list.<br />
-    # References: OOo docs s6.99 (STYLE record); Excel UI Format/Style
-    # <br /> -- New in version 0.6.1; since 0.7.4, extracted only if
-    # open_workbook(..., formatting_info=True)
     style_name_map = {}
+    """This provides access via name to the extended format information for
+       both built-in styles and user-defined styles.
+       
+    It maps <i>name</i> to (<i>built_in</i>, <i>xf_index</i>), where:<br />
+       * <i>name</i> is either the name of a user-defined style,
+         or the name of one of the built-in styles. Known built-in names are
+         Normal, RowLevel_1 to RowLevel_7,
+         ColLevel_1 to ColLevel_7, Comma, Currency, Percent, "Comma [0]",
+         "Currency [0]", Hyperlink, and "Followed Hyperlink".<br />
+       * built_in</i> 
+          * 1 = built-in style, 
+          * 0 = user-defined
+       * xf_index  is an index into Book.xf_list.
+       
+    References: OOo docs s6.99 (STYLE record); Excel UI Format/Style
+    
+    .. verionadded:: 0.6.1 
+    
+    .. note:: 
+         since 0.7.4, extracted only if
+         :py:func:`xlrd.open_workbook` paramater **formatting_info=True**
+    """
 
-    ##
-    # This provides definitions for colour indexes. Please refer to the
-    # above section "The Palette; Colour Indexes" for an explanation
-    # of how colours are represented in Excel.<br />
-    # Colour indexes into the palette map into (red, green, blue) tuples.
-    # "Magic" indexes e.g. 0x7FFF map to None.
-    # <i>colour_map</i> is what you need if you want to render cells on screen or in a PDF
-    # file. If you are writing an output XLS file, use <i>palette_record</i>.
-    # <br /> -- New in version 0.6.1. Extracted only if open_workbook(..., formatting_info=True)
     colour_map = {}
+    """This provides definitions for colour indexes. Please refer to the
+       above section "The Palette; Colour Indexes" for an explanation
+       of how colours are represented in Excel.
+       
+    * Colour indexes into the palette map into (red, green, blue) tuples.
+    * "Magic" indexes e.g. 0x7FFF map to None.
+    * *colour_map* is what you need if you want to render cells on screen or in a PDF
+      file. If you are writing an output XLS file, use *palette_record*.
+      
+    .. verionadded:: 0.6.1. Extracted only if open_workbook(..., formatting_info=True)
+   """
 
     palette_record = []
     """If the user has changed any of the colours in the standard palette, the XLS
-    file will contain a PALETTE record with 56 (16 for Excel 4.0 and earlier)
-    RGB values in it, and this list will be e.g. [(r0, b0, g0), ..., (r55, b55, g55)].
-    Otherwise this list will be empty. This is what you need if you are
-    writing an output XLS file. If you want to render cells on screen or in a PDF
-    file, use colour_map.
+       file will contain a PALETTE record with 56 (16 for Excel 4.0 and earlier)
+       RGB values in it, and this list will be e.g. [(r0, b0, g0), ..., (r55, b55, g55)].
+       Otherwise this list will be empty. This is what you need if you are
+       writing an output XLS file. If you want to render cells on screen or in a PDF
+       file, use colour_map.
     
     ..versionadded::  New in version 0.6.1. Extracted only if open_workbook(..., formatting_info=True)
     """
@@ -547,17 +568,19 @@ class Book(BaseObject):
         self.release_resources()
         # return false        
 
-    ##
-    # A mapping from (lower_case_name, scope) to a single Name object.
-    # <br />  -- New in version 0.6.0
     name_and_scope_map = {}
+    """A mapping from (lower_case_name, scope) to a single Name object.
+    .. versionadded:: 0.6.0
+    """
 
-    ##
-    # A mapping from lower_case_name to a list of Name objects. The list is
-    # sorted in scope order. Typically there will be one item (of global scope)
-    # in the list.
-    # <br />  -- New in version 0.6.0
     name_map = {}
+    """A mapping from lower_case_name to a list of Name objects. 
+    
+    The list is sorted in scope order. Typically there will be one item (of global scope)
+    in the list.
+    
+    .. versionadded:: 0.6.0
+    """
 
     def __init__(self):
         self._sheet_list = []

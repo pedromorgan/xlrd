@@ -32,10 +32,11 @@ MSATSID = -4
 EVILSID = -5
 
 class CompDocError(Exception):
+    """Error"""
     pass
 
 class DirNode(object):
-
+    """A directory"""
     def __init__(self, DID, dent, DEBUG=0, logfile=sys.stdout):
         # dent is the 128-byte directory entry
         self.DID = DID
@@ -75,13 +76,14 @@ def _build_family_tree(dirlist, parent_DID, child_DID):
     if dirlist[child_DID].etype == 1: # storage
         _build_family_tree(dirlist, child_DID, dirlist[child_DID].root_DID)
 
-##
-# Compound document handler.
-# @param mem The raw contents of the file, as a string, or as an mmap.mmap() object. The
-# only operation it needs to support is slicing.
+
 
 class CompDoc(object):
-
+    """Compound document handler
+    
+    :param mem: The raw contents of the file, as a string, or as an :py:func:`mmap` object. The
+                only operation it needs to support is slicing.
+    """
     def __init__(self, mem, logfile=sys.stdout, DEBUG=0):
         self.logfile = logfile
         self.DEBUG = DEBUG
@@ -350,12 +352,13 @@ class CompDoc(object):
                 raise CompDocError("Requested stream is not a 'user stream'")
         return None
 
-    ##
-    # Interrogate the compound document's directory; return the stream as a string if found, otherwise
-    # return None.
-    # @param qname Name of the desired stream e.g. u'Workbook'. Should be in Unicode or convertible thereto.
 
     def get_named_stream(self, qname):
+        """ Interrogate the compound document's directory; 
+        
+        :param qname: Name of the desired stream e.g. u'Workbook'. Should be in Unicode or convertible thereto.    
+        :rtype: The stream as a string if found, otherwise None.
+        """
         d = self._dir_search(qname.split("/"))
         if d is None:
             return None
@@ -368,16 +371,20 @@ class CompDoc(object):
                 self.SSCS, 0, self.SSAT, self.short_sec_size, d.first_SID,
                 d.tot_size, name=qname + " (from SSCS)", seen_id=None)
 
-    ##
-    # Interrogate the compound document's directory.
-    # If the named stream is not found, (None, 0, 0) will be returned.
-    # If the named stream is found and is contiguous within the original byte sequence ("mem")
-    # used when the document was opened,
-    # then (mem, offset_to_start_of_stream, length_of_stream) is returned.
-    # Otherwise a new string is built from the fragments and (new_string, 0, length_of_stream) is returned.
-    # @param qname Name of the desired stream e.g. u'Workbook'. Should be in Unicode or convertible thereto.
+
 
     def locate_named_stream(self, qname):
+        """Interrogate the compound document's directory.
+        
+        :param qname: Name of the desired stream e.g. u'Workbook'. Should be in Unicode or convertible thereto.
+        :returns: 
+            * If the named stream is not found, (None, 0, 0) will be returned.
+            * If the named stream is found and is contiguous within the original byte sequence ("mem")
+              used when the document was opened,
+              then (mem, offset_to_start_of_stream, length_of_stream) is returned.
+            * Otherwise a new string is built from the fragments and 
+              (new_string, 0, length_of_stream) is returned.
+        """
         d = self._dir_search(qname.split("/"))
         if d is None:
             return (None, 0, 0)

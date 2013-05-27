@@ -7,10 +7,13 @@ xlrd API
     :maxdepth: 2
     
     xlrd
-    book
-    sheet
-    formatting
     biffh
+    book
+    compdoc
+    formatting
+    formula
+    sheet
+    timemachine
     xldate
     xlsx
    

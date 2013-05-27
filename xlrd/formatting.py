@@ -163,96 +163,116 @@ def nearest_colour_index(colour_map, rgb, debug=0):
             % (rgb, best_colourx, colour_map[best_colourx], best_metric))
     return best_colourx
 
-##
-# This mixin class exists solely so that Format, Font, and XF.... objects
-# can be compared by value of their attributes.
-class EqNeAttrs(object):
 
+class EqNeAttrs(object):
+    """Mixin for comparing attributes
+    
+    This mixin class exists solely so that :py:class:`~xlrd.formatting.Format`, 
+    :py:class:`~xlrd.formatting.Font`, and :py:class:`~xlrd.formatting.XF` objects
+    can be compared by value of their attributes.
+    """
     def __eq__(self, other):
         return self.__dict__ == other.__dict__
 
     def __ne__(self, other):
         return self.__dict__ != other.__dict__
 
-##
-# An Excel "font" contains the details of not only what is normally
-# considered a font, but also several other display attributes.
-# Items correspond to those in the Excel UI's Format/Cells/Font tab.
-# <br /> -- New in version 0.6.1
-class Font(BaseObject, EqNeAttrs):
-    ##
-    # 1 = Characters are bold. Redundant; see "weight" attribute.
-    bold = 0
-    ##
-    # Values: 0 = ANSI Latin, 1 = System default, 2 = Symbol,
-    # 77 = Apple Roman,
-    # 128 = ANSI Japanese Shift-JIS,
-    # 129 = ANSI Korean (Hangul),
-    # 130 = ANSI Korean (Johab),
-    # 134 = ANSI Chinese Simplified GBK,
-    # 136 = ANSI Chinese Traditional BIG5,
-    # 161 = ANSI Greek,
-    # 162 = ANSI Turkish,
-    # 163 = ANSI Vietnamese,
-    # 177 = ANSI Hebrew,
-    # 178 = ANSI Arabic,
-    # 186 = ANSI Baltic,
-    # 204 = ANSI Cyrillic,
-    # 222 = ANSI Thai,
-    # 238 = ANSI Latin II (Central European),
-    # 255 = OEM Latin I
-    character_set = 0
-    ##
-    # An explanation of "colour index" is given in the Formatting
-    # section at the start of this document.
-    colour_index = 0
-    ##
-    # 1 = Superscript, 2 = Subscript.
-    escapement = 0
-    ##
-    # 0 = None (unknown or don't care)<br />
-    # 1 = Roman (variable width, serifed)<br />
-    # 2 = Swiss (variable width, sans-serifed)<br />
-    # 3 = Modern (fixed width, serifed or sans-serifed)<br />
-    # 4 = Script (cursive)<br />
-    # 5 = Decorative (specialised, for example Old English, Fraktur)
-    family = 0
-    ##
-    # The 0-based index used to refer to this Font() instance.
-    # Note that index 4 is never used; xlrd supplies a dummy place-holder.
-    font_index = 0
-    ##
-    # Height of the font (in twips). A twip = 1/20 of a point.
-    height = 0
-    ##
-    # 1 = Characters are italic.
-    italic = 0
-    ##
-    # The name of the font. Example: u"Arial"
-    name = UNICODE_LITERAL("")
-    ##
-    # 1 = Characters are struck out.
-    struck_out = 0
-    ##
-    # 0 = None<br />
-    # 1 = Single;  0x21 (33) = Single accounting<br />
-    # 2 = Double;  0x22 (34) = Double accounting
-    underline_type = 0
-    ##
-    # 1 = Characters are underlined. Redundant; see "underline_type" attribute.
-    underlined = 0
-    ##
-    # Font weight (100-1000). Standard values are 400 for normal text
-    # and 700 for bold text.
-    weight = 400
-    ##
-    # 1 = Font is outline style (Macintosh only)
-    outline = 0
-    ##
-    # 1 = Font is shadow style (Macintosh only)
-    shadow = 0
 
-    # No methods ...
+class Font(BaseObject, EqNeAttrs):
+    """Represents an Excel font
+    
+    An Excel 'font' contains the details of not only what is normally
+    considered a font, but also several other display attributes. Items 
+    correspond to those in the Excel UI's Format/Cells/Font tab.
+    
+    .. versionadded:: 0.6.1
+    """
+    
+    bold = 0
+    """1 = Characters are bold. 
+    .. depreceated:: 
+        see "weight" attribute.
+    """
+    
+    character_set = 0
+    """Values: 
+      
+      * 0 = ANSI Latin, 1 = System default, 2 = Symbol,
+      * 77 = Apple Roman,
+      * 128 = ANSI Japanese Shift-JIS,
+      * 129 = ANSI Korean (Hangul),
+      * 130 = ANSI Korean (Johab),
+      * 134 = ANSI Chinese Simplified GBK,
+      * 136 = ANSI Chinese Traditional BIG5,
+      * 161 = ANSI Greek,
+      * 162 = ANSI Turkish,
+      * 163 = ANSI Vietnamese,
+      * 177 = ANSI Hebrew,
+      * 178 = ANSI Arabic,
+      * 186 = ANSI Baltic,
+      * 204 = ANSI Cyrillic,
+      * 222 = ANSI Thai,
+      * 238 = ANSI Latin II (Central European),
+      * 255 = OEM Latin I
+    """
+    
+    colour_index = 0
+    """An explanation of "colour index" is given in the Formatting
+    section at the start of this document.
+    """
+    
+    escapement = 0
+    """1 = Superscript, 2 = Subscript."""
+   
+    family = 0
+    """
+      * 0 = None (unknown or don't care)<br />
+      * 1 = Roman (variable width, serifed)<br />
+      * 2 = Swiss (variable width, sans-serifed)<br />
+      * 3 = Modern (fixed width, serifed or sans-serifed)<br />
+      * 4 = Script (cursive)<br />
+      * 5 = Decorative (specialised, for example Old English, Fraktur)
+    """
+    
+    font_index = 0
+    """The 0-based index used to refer to this Font() instance.
+       Note that index 4 is never used; xlrd supplies a dummy place-holder.
+    """
+    
+    height = 0
+    """Height of the font (in twips). A twip = 1/20 of a point."""
+    
+    italic = 0
+    """1 = Characters are italic."""
+    
+    name = UNICODE_LITERAL("")
+    """The name of the font. Example: u'Arial' """
+    
+    struck_out = 0
+    """1 = Characters are struck out."""
+    
+    underline_type = 0
+    """
+      * 0 = None<br />
+      * 1 = Single;  0x21 (33) = Single accounting<br />
+      * 2 = Double;  0x22 (34) = Double accounting
+    """
+    
+    underlined = 0
+    """1 = Characters are underlined. Redundant; see 'underline_type' attribute."""
+    
+    weight = 400
+    """Font weight (100-1000). Standard values are 400 
+       for normal text and 700 for bold text.
+    """
+    
+    outline = 0
+    """1 = Font is outline style (Macintosh only)"""
+    
+    shadow = 0
+    """1 = Font is shadow style (Macintosh only)"""
+    
+
 
 def handle_efont(book, data): # BIFF2 only
     if not book.formatting_info:
@@ -331,27 +351,30 @@ def handle_font(book, data):
             )
 
 # === "Number formats" ===
-
-##
-# "Number format" information from a FORMAT record.
-# <br /> -- New in version 0.6.1
 class Format(BaseObject, EqNeAttrs):
-    ##
-    # The key into Book.format_map
+    """*Number format* information from a FORMAT record.
+
+    .. versionadded:: New in version 0.6.1
+    """
+    
     format_key = 0
-    ##
-    # A classification that has been inferred from the format string.
-    # Currently, this is used only to distinguish between numbers and dates.
-    # <br />Values:
-    # <br />FUN = 0 # unknown
-    # <br />FDT = 1 # date
-    # <br />FNU = 2 # number
-    # <br />FGE = 3 # general
-    # <br />FTX = 4 # text
+    """The key into Book.format_map"""
+    
     type = FUN
-    ##
-    # The format string
+    """A classification that has been inferred from the format string.
+    
+    Currently, this is used only to distinguish between numbers and dates.
+    * Values:
+      * FUN = 0 # unknown
+      * FDT = 1 # date
+      * FNU = 2 # number
+      * FGE = 3 # general
+      * FTX = 4 # text
+    """
+    
     format_str = UNICODE_LITERAL('')
+    """The format string"""
+
 
     def __init__(self, format_key, ty, format_str):
         self.format_key = format_key
@@ -1065,138 +1088,157 @@ def initialise_book(book):
     for method in methods:
         setattr(book.__class__, method.__name__, method)
 
-##
-# <p>A collection of the border-related attributes of an XF record.
-# Items correspond to those in the Excel UI's Format/Cells/Border tab.</p>
-# <p> An explanations of "colour index" is given in the Formatting
-# section at the start of this document.
-# There are five line style attributes; possible values and the
-# associated meanings are:
-# 0&nbsp;=&nbsp;No line,
-# 1&nbsp;=&nbsp;Thin,
-# 2&nbsp;=&nbsp;Medium,
-# 3&nbsp;=&nbsp;Dashed,
-# 4&nbsp;=&nbsp;Dotted,
-# 5&nbsp;=&nbsp;Thick,
-# 6&nbsp;=&nbsp;Double,
-# 7&nbsp;=&nbsp;Hair,
-# 8&nbsp;=&nbsp;Medium dashed,
-# 9&nbsp;=&nbsp;Thin dash-dotted,
-# 10&nbsp;=&nbsp;Medium dash-dotted,
-# 11&nbsp;=&nbsp;Thin dash-dot-dotted,
-# 12&nbsp;=&nbsp;Medium dash-dot-dotted,
-# 13&nbsp;=&nbsp;Slanted medium dash-dotted.
-# The line styles 8 to 13 appear in BIFF8 files (Excel 97 and later) only.
-# For pictures of the line styles, refer to OOo docs s3.10 (p22)
-# "Line Styles for Cell Borders (BIFF3-BIFF8)".</p>
-# <br /> -- New in version 0.6.1
 class XFBorder(BaseObject, EqNeAttrs):
-
-    ##
-    # The colour index for the cell's top line
+    """A collection of the border-related attributes of an XF record.
+    
+    Items correspond to those in the Excel UI's Format/Cells/Border tab.
+    
+    An explanations of "colour index" is given in the Formatting
+    section at the start of this document.
+    
+    There are five line style attributes; possible values and the
+    associated meanings are:
+      * 0 = No line,
+      * 1 = Thin,
+      * 2 = Medium,
+      * 3 = Dashed,
+      * 4 = Dotted,
+      * 5 = Thick,
+      * 6 = Double,
+      * 7 = Hair,
+      * 8 = Medium dashed,
+      * 9 = Thin dash-dotted,
+      * 10 = Medium dash-dotted,
+      * 11 = Thin dash-dot-dotted,
+      * 12 = Medium dash-dot-dotted,
+      * 13 = Slanted medium dash-dotted.
+    
+    The line styles 8 to 13 appear in BIFF8 files (Excel 97 and later) only.
+    For pictures of the line styles, refer to OOo docs s3.10 (p22)
+    "Line Styles for Cell Borders (BIFF3-BIFF8)".
+    
+    .. versionadded:: 0.6.1
+    """
+    
     top_colour_index = 0
-    ##
-    # The colour index for the cell's bottom line
+    """The colour index for the cell's top line"""
+    
     bottom_colour_index = 0
-    ##
-    # The colour index for the cell's left line
+    """The colour index for the cell's bottom line"""
+    
     left_colour_index = 0
-    ##
-    # The colour index for the cell's right line
+    """The colour index for the cell's left line"""
+    
     right_colour_index = 0
-    ##
-    # The colour index for the cell's diagonal lines, if any
-    diag_colour_index = 0
-    ##
-    # The line style for the cell's top line
+    """The colour index for the cell's right line"""
+    
+    diag_colour_index = 0 
+    """The colour index for the cell's diagonal lines, if any"""
+    
     top_line_style = 0
-    ##
-    # The line style for the cell's bottom line
+    """The line style for the cell's top line"""
+    
     bottom_line_style = 0
-    ##
-    # The line style for the cell's left line
+    """The line style for the cell's bottom line"""
+   
     left_line_style = 0
-    ##
-    # The line style for the cell's right line
+    """The line style for the cell's left line"""
+    
     right_line_style = 0
-    ##
-    # The line style for the cell's diagonal lines, if any
+    """The line style for the cell's right line"""
+    
     diag_line_style = 0
-    ##
-    # 1 = draw a diagonal from top left to bottom right
+    """The line style for the cell's diagonal lines, if any"""
+    
     diag_down = 0
-    ##
-    # 1 = draw a diagonal from bottom left to top right
+    """1 = draw a diagonal from top left to bottom right"""
+    
     diag_up = 0
+    """1 = draw a diagonal from bottom left to top right"""
+    
 
-##
-# A collection of the background-related attributes of an XF record.
-# Items correspond to those in the Excel UI's Format/Cells/Patterns tab.
-# An explanation of "colour index" is given in the Formatting
-# section at the start of this document.
-# <br /> -- New in version 0.6.1
+
 class XFBackground(BaseObject, EqNeAttrs):
-
-    ##
-    # See section 3.11 of the OOo docs.
+    """A collection of the background-related attributes of an XF record.
+    
+    Items correspond to those in the Excel UI's Format/Cells/Patterns tab.
+    An explanation of "colour index" is given in the Formatting
+    section at the start of this document.
+    
+    .. versionadded:: 0.6.1
+    """
+    
     fill_pattern = 0
-    ##
-    # See section 3.11 of the OOo docs.
+    """See section 3.11 of the OOo docs."""
+    
     background_colour_index = 0
-    ##
-    # See section 3.11 of the OOo docs.
+    """See section 3.11 of the OOo docs."""
+    
     pattern_colour_index = 0
+    """See section 3.11 of the OOo docs."""
+    
 
-##
-# A collection of the alignment and similar attributes of an XF record.
-# Items correspond to those in the Excel UI's Format/Cells/Alignment tab.
-# <br /> -- New in version 0.6.1
 
 class XFAlignment(BaseObject, EqNeAttrs):
-
-    ##
-    # Values: section 6.115 (p 214) of OOo docs
+    """A collection of the alignment and similar attributes of an XF record.
+       Items correspond to those in the Excel UI's Format/Cells/Alignment tab.
+       
+    .. versionadded:: 0.6.1
+    """
+    
     hor_align = 0
-    ##
-    # Values: section 6.115 (p 215) of OOo docs
+    """Values: section 6.115 (p 214) of OOo docs"""
+    
     vert_align = 0
-    ##
-    # Values: section 6.115 (p 215) of OOo docs.<br />
-    # Note: file versions BIFF7 and earlier use the documented
-    # "orientation" attribute; this will be mapped (without loss)
-    # into "rotation".
+    """Values: section 6.115 (p 215) of OOo docs"""
+    
     rotation = 0
-    ##
-    # 1 = text is wrapped at right margin
-    text_wrapped = 0
-    ##
-    # A number in range(15).
-    indent_level = 0
-    ##
-    # 1 = shrink font size to fit text into cell.
-    shrink_to_fit = 0
-    ##
-    # 0 = according to context; 1 = left-to-right; 2 = right-to-left
-    text_direction = 0
+    """Values: section 6.115 (p 215) of OOo docs.
+    
+    .. note::
+        
+        File versions BIFF7 and earlier use the documented
+        "orientation" attribute; this will be mapped (without loss)
+        into "rotation".
+    """
 
-##
-# A collection of the protection-related attributes of an XF record.
-# Items correspond to those in the Excel UI's Format/Cells/Protection tab.
-# Note the OOo docs include the "cell or style" bit
-# in this bundle of attributes.
-# This is incorrect; the bit is used in determining which bundles to use.
-# <br /> -- New in version 0.6.1
+    text_wrapped = 0
+    """1 = text is wrapped at right margin"""
+    
+    indent_level = 0
+    """A number in range(15)."""
+    
+    shrink_to_fit = 0
+    """1 = shrink font size to fit text into cell."""
+    
+    text_direction = 0
+    """0 = according to context; 1 = left-to-right; 2 = right-to-left"""
+
+
 
 class XFProtection(BaseObject, EqNeAttrs):
-
-    ##
-    # 1 = Cell is prevented from being changed, moved, resized, or deleted
-    # (only if the sheet is protected).
+    """A collection of the protection-related attributes of an XF record.
+    
+    Items correspond to those in the Excel UI's Format/Cells/Protection tab.
+    
+    .. Note::
+        The OOo docs include the "cell or style" bit  in this bundle of attributes.
+        This is incorrect; the bit is used in determining which bundles to use.
+        
+    .. versionadded:: 0.6.1
+    """
+    
     cell_locked = 0
-    ##
-    # 1 = Hide formula so that it doesn't appear in the formula bar when
-    # the cell is selected (only if the sheet is protected).
+    """1 = Cell is prevented from being changed, moved, resized, or deleted
+       (only if the sheet is protected).
+    """
+    
+    
     formula_hidden = 0
+    """1 = Hide formula so that it doesn't appear in the formula bar when
+       the cell is selected (only if the sheet is protected).
+    """
+    
 
 
 class XF(BaseObject):
@@ -1216,58 +1258,59 @@ class XF(BaseObject):
 
     .. versionadded:: 0.6.1
     """
-    ##
-    # 0 = cell XF, 1 = style XF
+    
     is_style = 0
-    ##
-    # cell XF: Index into Book.xf_list
-    # of this XF's style XF<br />
-    # style XF: 0xFFF
+    """0 = cell XF, 1 = style XF"""
+    
+    
+    
     parent_style_index = 0
-    ##
-    #
+    """cell XF: Index into Book.xf_list
+       of this XF's style XF<br />
+       style XF: 0xFFF
+    """
+
     _format_flag = 0
-    ##
-    #
+
     _font_flag = 0
-    ##
-    #
+
     _alignment_flag = 0
-    ##
-    #
+
     _border_flag = 0
-    ##
-    #
+    
     _background_flag = 0
-    ##
-    # &nbsp;
+    
     _protection_flag = 0
-    ##
-    # Index into Book.xf_list
+    
+    
+    
     xf_index = 0
-    ##
-    # Index into Book.font_list
+    """Index into Book.xf_list"""
+    
     font_index = 0
-    ##
-    # Key into Book.format_map
-    # <p>
-    # Warning: OOo docs on the XF record call this "Index to FORMAT record".
-    # It is not an index in the Python sense. It is a key to a map.
-    # It is true <i>only</i> for Excel 4.0 and earlier files
-    # that the key into format_map from an XF instance
-    # is the same as the index into format_list, and <i>only</i>
-    # if the index is less than 164.
-    # </p>
+    """Index into Book.font_list"""
+    
     format_key = 0
-    ##
-    # An instance of an XFProtection object.
+    """Key into Book.format_map
+    
+    .. warning::
+        OOo docs on the XF record call this "Index to FORMAT record".
+        It is not an index in the Python sense. It is a key to a map.
+        It is true *only* for Excel 4.0 and earlier files
+        that the key into format_map from an XF instance
+        is the same as the index into format_list, and *only*
+        if the index is less than 164.
+    """
+    
+    
     protection = None
-    ##
-    # An instance of an XFBackground object.
+    """An instance of an :py:class:`~xlrd.formatting.XFProtection` object."""
+    
     background = None
-    ##
-    # An instance of an XFAlignment object.
+    """An instance of an :py:class:`~xlrd.formatting.XFBackground` object."""
+    
     alignment = None
-    ##
-    # An instance of an XFBorder object.
+    """An instance of an :py:class:`~xlrd.formatting.XFAlignment` object."""
+    
     border = None
+    """An instance of an :py:class:`~xlrd.formatting.XFBorder` object."""

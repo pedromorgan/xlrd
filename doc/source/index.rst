@@ -10,7 +10,7 @@ xlrd: A Python module for reading Microsoft Excel spreadsheets
     :maxdepth: 2
     
     about
-    tutorial
+    dev_guide
     api
     
 

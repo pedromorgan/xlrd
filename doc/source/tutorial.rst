@@ -580,15 +580,17 @@ In addition, the following classes are solely used to represent formatting infor
 Working with large Excel files
 ------------------------------
 
-If you are working with particularly large Excel files, then there are two features of ``xlrd`` that you should be aware of:
+If you are working with particularly large Excel files, then there are two 
+features of :py:mod:`xlrd` that you should be aware of:
 
-* The ``on_demand`` parameter can be passed as ``True`` to ``open_workbook`` resulting in worksheets only being loaded into memory when they are requested.
+*   The **on_demand** parameter can be passed as *True* to :py:func:`xlrd.open_workbook` resulting 
+    in worksheets only being loaded into memory when they are requested.
+*   :py:class:`~xlrd.book.Book` objects have an :py:meth:`~xlrd.book.Book.unload_sheet` method 
+    that will unload a worksheet, specified by either sheet index or sheet name, from memory.
 
-
-* ``xlrd.Book`` objects have an ``unload_sheet`` method that will unload worksheet, specified by either sheet index or sheet name, from memory.
-
-
-The following example shows how a large workbook could be iterated over when only sheets matching a certain pattern need to be inspected, and where only one of those sheets ends up in memory at any one time:
+The following example shows how a large workbook could be iterated over when only sheets 
+matching a certain pattern need to be inspected, and where only one of those sheets ends 
+up in memory at any one time:
 
 ::
 
@@ -601,14 +603,16 @@ The following example shows how a large workbook could be iterated over when onl
           sheet = book.sheet_by_name(name)
           print sheet.cell_value(0,0)
           book.unload_sheet(name)
-  large_files.py
+          
 
-Introspecting Excel files with ''runxlrd.py''
----------------------------------------------
+Introspecting Excel files with :command:`runxlrd.py`
+-----------------------------------------------------
 
-The ``xlrd`` source distribution includes a ``runxlrd.py`` script that is extremely useful for introspecting Excel files without writing a single line of Python.
+The :py:mod:`xlrd` source distribution includes a :command:`runxlrd.py` script that 
+is extremely useful for introspecting Excel files without writing a single line of Python.
 
-You are encouraged to run a variety of the commands it provides over the Excel files provided in the course materials.
+You are encouraged to run a variety of the commands it provides over the Excel files 
+provided in the course materials.
 
 The following gives an overview of what's available from ``runxlrd``, and can be obtained using ``python runxlrd.py –-help``:
 
